@@ -30,7 +30,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route("dashboard") }}" class="nav-link {{ request()->is('owner') ? 'active' : ''}}"> <i class="nav-icon bi bi-people-fill"></i>
+                    <a href="{{ route("owner.index") }}" class="nav-link {{ request()->is('owner') ? 'active' : ''}}"> <i class="nav-icon bi bi-people-fill"></i>
                         <p>Registered Owner</p>
                     </a>
                 </li>
