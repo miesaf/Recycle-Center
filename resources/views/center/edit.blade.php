@@ -48,23 +48,27 @@
                                 <div class="mb-3">
                                     <label for="services" class="form-label">Services Offered</label>
 
+                                    @php
+                                        $servicesArr = json_decode($recyclingCenter->services)->services;
+                                    @endphp
+
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="service1" name="services[]" value="Paper">
+                                        <input class="form-check-input" type="checkbox" id="service1" name="services[]" value="Paper" {{ in_array("Paper", $servicesArr) ? "checked" : null }}>
                                         <label class="form-check-label" for="service1"> Paper</label>
                                     </div>
 
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="service2" name="services[]" value="Metal">
+                                        <input class="form-check-input" type="checkbox" id="service2" name="services[]" value="Metal" {{ in_array("Metal", $servicesArr) ? "checked" : null }}>
                                         <label class="form-check-label" for="service2"> Metal</label>
                                     </div>
 
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="service3" name="services[]" value="Fabric">
+                                        <input class="form-check-input" type="checkbox" id="service3" name="services[]" value="Fabric" {{ in_array("Fabric", $servicesArr) ? "checked" : null }}>
                                         <label class="form-check-label" for="service3"> Fabric</label>
                                     </div>
 
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="service4" name="services[]" value="Glass">
+                                        <input class="form-check-input" type="checkbox" id="service4" name="services[]" value="Glass" {{ in_array("Glass", $servicesArr) ? "checked" : null }}>
                                         <label class="form-check-label" for="service4"> Glass</label>
                                     </div>
 

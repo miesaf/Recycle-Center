@@ -83,7 +83,7 @@
                                         <td>{{ $recyclingCenter->is_dropbox ? "Dropbox" : "Premise" }}</td>
                                         <td>{{ $recyclingCenter->operation_hour }}</td>
                                         <td>
-                                            {{-- <x-nav-link class="bg-blue-500 text-white px-4 py-1 rounded" :href="route('center.show', 1)">View</x-nav-link> --}}
+                                            {{-- <button class="btn btn-success btn-sm" href="{{ route('center.edit', $recyclingCenter->id) }}">Approve</button> --}}
 
                                             <a class="btn btn-warning btn-sm" href="{{ route('center.edit', $recyclingCenter->id) }}">Edit</a>
 

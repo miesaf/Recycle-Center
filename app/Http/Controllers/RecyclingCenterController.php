@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\RecyclingCenter;
 use Illuminate\Http\Request;
 use Session;
+use Auth;
 
 class RecyclingCenterController extends Controller
 {
@@ -13,7 +14,12 @@ class RecyclingCenterController extends Controller
      */
     public function index()
     {
-        $recyclingCenters = RecyclingCenter::all();
+        if(Auth::user()->is_admin) {
+            $recyclingCenters = RecyclingCenter::all();
+        } else {
+            $recyclingCenters = RecyclingCenter::all();
+        }
+        
         return view("center.index")->with('recyclingCenters', $recyclingCenters);
     }
 

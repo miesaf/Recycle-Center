@@ -22,6 +22,7 @@
                     </a>
                 </li>
 
+                @if(auth()->user()->is_admin)
                 <li class="nav-item">
                     <a href="{{ route("center.index") }}" class="nav-link {{ request()->routeIs('center.*') ? 'active' : ''}}"> <i class="nav-icon bi bi-recycle"></i>
                         <p>Recycle Center</p>
@@ -33,6 +34,13 @@
                         <p>Registered Owner</p>
                     </a>
                 </li>
+                @else
+                <li class="nav-item">
+                    <a href="{{ route("branch.index") }}" class="nav-link {{ request()->routeIs('branch.*') ? 'active' : ''}}"> <i class="nav-icon bi bi-recycle"></i>
+                    <p>Recycle Center</p>
+                    </a>
+                </li>
+                @endif
             </ul> <!--end::Sidebar Menu-->
         </nav>
     </div> <!--end::Sidebar Wrapper-->
