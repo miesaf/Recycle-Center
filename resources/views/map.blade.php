@@ -9,7 +9,7 @@
         loading="lazy"
         allowfullscreen
         referrerpolicy="no-referrer-when-downgrade"
-        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA3MUZnhGu_x_up9sodns4Wcb5YIf91VSs
+        src="https://www.google.com/maps/embed/v1/place?key={{ env("GOOGLE_MAP_API_KEY") }}
         &q=UiTM+Shah+Alam">
     </iframe>
 
@@ -32,7 +32,7 @@
         )
         (
             {
-                key: "AIzaSyA3MUZnhGu_x_up9sodns4Wcb5YIf91VSs",
+                key: "{{ env("GOOGLE_MAP_API_KEY") }}",
                 v: "weekly"
             }
         );
