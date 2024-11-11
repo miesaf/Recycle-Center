@@ -11,26 +11,26 @@
         <nav class="mt-2"> <!--begin::Sidebar Menu-->
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
                 <li class="nav-item">
-                    <a href="{{ route("dashboard") }}" class="nav-link active"> <i class="nav-icon bi bi-speedometer"></i>
+                    <a href="{{ route("dashboard") }}" class="nav-link {{ request()->is('dashboard') ? 'active' : ''}}"> <i class="nav-icon bi bi-speedometer"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route("profile.edit") }}" class="nav-link"> <i class="nav-icon bi bi-person-badge-fill"></i>
+                    <a href="{{ route("profile.edit") }}" class="nav-link {{ request()->is('profile') ? 'active' : ''}}"> <i class="nav-icon bi bi-person-badge-fill"></i>
                         <p>Update Profile</p>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route("center.index") }}" class="nav-link"> <i class="nav-icon bi bi-recycle"></i>
-                        <p>Recycle Centers</p>
+                    <a href="{{ route("center.index") }}" class="nav-link {{ request()->routeIs('center.*') ? 'active' : ''}}"> <i class="nav-icon bi bi-recycle"></i>
+                        <p>Recycle Center</p>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route("dashboard") }}" class="nav-link"> <i class="nav-icon bi bi-people-fill"></i>
-                        <p>Registered Owners</p>
+                    <a href="{{ route("dashboard") }}" class="nav-link {{ request()->is('owner') ? 'active' : ''}}"> <i class="nav-icon bi bi-people-fill"></i>
+                        <p>Registered Owner</p>
                     </a>
                 </li>
             </ul> <!--end::Sidebar Menu-->

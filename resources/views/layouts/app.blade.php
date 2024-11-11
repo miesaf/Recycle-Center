@@ -34,7 +34,7 @@
                             <li class="user-header text-bg-primary"> <img src="{{ asset("assets/img/user2-160x160.jpg") }}" class="rounded-circle shadow" alt="User Image">
                                 <p>
                                     {{ auth()->user()->name }}
-                                    <small>Member since {{ auth()->user()->created_at }}</small>
+                                    <small>Member since {{ auth()->user()->created_at->format('d M Y') }}</small>
                                 </p>
                             </li> <!--end::User Image--> <!--begin::Menu Footer-->
                             <li class="user-footer"> <a href="{{ route("logout") }}" class="btn btn-default btn-flat float-end">Sign out</a> </li> <!--end::Menu Footer-->
@@ -50,7 +50,7 @@
 
         <footer class="app-footer"> <!--begin::To the end-->
             <div class="float-end d-none d-sm-inline">Anything you want</div> <!--end::To the end--> <!--begin::Copyright--> <strong>
-                Copyright &copy; 2014-2024&nbsp;
+                Copyright &copy; 2024&nbsp;
                 <a href="https://adminlte.io" class="text-decoration-none">{{ env("APP_NAME") }}</a>.
             </strong>
             All rights reserved.
