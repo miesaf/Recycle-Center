@@ -37,7 +37,12 @@
                                     <small>Member since {{ auth()->user()->created_at->format('d M Y') }}</small>
                                 </p>
                             </li> <!--end::User Image--> <!--begin::Menu Footer-->
-                            <li class="user-footer"> <a href="{{ route("logout") }}" class="btn btn-default btn-flat float-end">Sign out</a> </li> <!--end::Menu Footer-->
+                            <li class="user-footer">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <a href="{{ route("logout") }}" class="btn btn-default btn-flat float-end" onclick="event.preventDefault(); this.closest('form').submit();">Sign out</a>
+                                </form>
+                            </li> <!--end::Menu Footer-->
                         </ul>
                     </li> <!--end::User Menu Dropdown-->
                 </ul> <!--end::End Navbar Links-->
