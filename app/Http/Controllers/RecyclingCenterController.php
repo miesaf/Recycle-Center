@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RecyclingCenter;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Session;
 use Auth;
@@ -19,7 +20,7 @@ class RecyclingCenterController extends Controller
         } else {
             $recyclingCenters = RecyclingCenter::all();
         }
-        
+
         return view("center.index")->with('recyclingCenters', $recyclingCenters);
     }
 
@@ -28,7 +29,8 @@ class RecyclingCenterController extends Controller
      */
     public function create()
     {
-        return view("center.create");
+        $owners = User::select("id", "name", "email")->where("is_admin", "<>", 1)->get();
+        return view("center.create")->with('owners', $owners);
     }
 
     /**
@@ -42,6 +44,7 @@ class RecyclingCenterController extends Controller
             'address' => 'required',
             'is_dropbox' => 'required',
             'operation_hour' => 'required_if:is_dropbox,0',
+            'owner' => 'required|integer|exists:users,id',
         ]);
 
         $recyclingCenter = new RecyclingCenter;
@@ -65,6 +68,7 @@ class RecyclingCenterController extends Controller
         $recyclingCenter->address = $request->address;
         $recyclingCenter->is_dropbox = $request->is_dropbox;
         $recyclingCenter->operation_hour = $request->operation_hour;
+        $recyclingCenter->owner = $request->owner;
 
         if($recyclingCenter->save()) {
             Session::flash('success', 'Recycle center created!');
@@ -89,8 +93,9 @@ class RecyclingCenterController extends Controller
      */
     public function edit($id)
     {
+        $owners = User::select("id", "name", "email")->where("is_admin", "<>", 1)->get();
         $recyclingCenter = RecyclingCenter::find($id);
-        return view("center.edit")->with('recyclingCenter', $recyclingCenter);
+        return view("center.edit")->with('recyclingCenter', $recyclingCenter)->with('owners', $owners);
     }
 
     /**
@@ -104,6 +109,7 @@ class RecyclingCenterController extends Controller
             'address' => 'required',
             'is_dropbox' => 'required',
             'operation_hour' => 'required_if:is_dropbox,0',
+            'owner' => 'required|integer|exists:users,id',
         ]);
 
         $recyclingCenter = RecyclingCenter::find($id);
@@ -127,6 +133,7 @@ class RecyclingCenterController extends Controller
         $recyclingCenter->address = $request->address;
         $recyclingCenter->is_dropbox = $request->is_dropbox;
         $recyclingCenter->operation_hour = $request->operation_hour;
+        $recyclingCenter->owner = $request->owner;
 
         if($recyclingCenter->update()) {
             Session::flash('success', 'Recycle center updated!');

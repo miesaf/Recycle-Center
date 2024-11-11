@@ -115,6 +115,24 @@
                                     @enderror
                                 </div>
 
+                                <!-- Premise Owner -->
+                                <div class="mb-3">
+                                    <label for="owner" class="form-label">Branch Owner</label>
+                                    <select id="owner" class="form-select" name="owner" required>
+                                        <option value selected>Please select</option>
+                                        <option disabled></option>
+                                        @foreach($owners as $owner)
+                                        <option value="{{ $owner->id }}" >{{ $owner->name }} ({{ $owner->email }})</option>
+                                        @endforeach
+                                    </select>
+
+                                    @error("owner")
+                                    <div class="form-text">
+                                        <font color="red">{{ $message }}</font>
+                                    </div>
+                                    @enderror
+                                </div>
+
                                 <div class="flex items-center justify-end mt-4">
                                     <button type="submit" class="btn btn-primary">
                                         {{ __('Submit') }}

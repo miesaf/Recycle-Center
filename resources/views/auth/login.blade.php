@@ -43,8 +43,8 @@
                 <p class="mb-1"> <a href="{{ route('password.request') }}">I forgot my password</a> </p>
                 @endif
 
-                <p class="mb-0"> <a href="register.html" class="text-center">
-                        Register a new membership
+                <p class="mb-0"> <a href="{{ route("register") }}" class="text-center">
+                        Register a recycle center account
                     </a> </p>
             </div> <!-- /.login-card-body -->
         </div>
