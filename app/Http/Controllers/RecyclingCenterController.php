@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\RecyclingCenter;
 use Illuminate\Http\Request;
+use Session;
 
 class RecyclingCenterController extends Controller
 {
@@ -58,7 +59,12 @@ class RecyclingCenterController extends Controller
         $recyclingCenter->address = $request->address;
         $recyclingCenter->is_dropbox = $request->is_dropbox;
         $recyclingCenter->operation_hour = $request->operation_hour;
-        $recyclingCenter->save();
+
+        if($recyclingCenter->save()) {
+            Session::flash('success', 'Recycle center created!');
+        } else {
+            Session::flash('danger', 'Failed to create recycle center!');
+        }
 
         return redirect()->route("center.index");
     }
@@ -115,7 +121,12 @@ class RecyclingCenterController extends Controller
         $recyclingCenter->address = $request->address;
         $recyclingCenter->is_dropbox = $request->is_dropbox;
         $recyclingCenter->operation_hour = $request->operation_hour;
-        $recyclingCenter->update();
+
+        if($recyclingCenter->update()) {
+            Session::flash('success', 'Recycle center updated!');
+        } else {
+            Session::flash('danger', 'Failed to update recycle center!');
+        }
 
         return redirect()->route("center.index");
     }
@@ -125,7 +136,12 @@ class RecyclingCenterController extends Controller
      */
     public function destroy($id)
     {
-        RecyclingCenter::find($id)->delete();
+        if(RecyclingCenter::find($id)->delete()) {
+            Session::flash('success', 'Recycle center deleted!');
+        } else {
+            Session::flash('danger', 'Failed to delete recycle center!');
+        }
+
         return redirect()->route("center.index");
     }
 }

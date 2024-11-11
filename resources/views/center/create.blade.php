@@ -1,82 +1,131 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Recycle Center') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h1>Register New Recycling Center</h1>
-                    <br/>
-
-                    <form method="POST" action="{{ route('center.store') }}">
-                        @csrf
-
-                        <!-- Name -->
-                        <div>
-                            <x-input-label for="name" :value="__('Name')" />
-                            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
-                            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                        </div>
-
-                        <!-- Services -->
-                        <div class="mt-4">
-                            <x-input-label for="services" :value="__('Services')" />
-
-                            <input type="checkbox" id="service1" name="services[]" value="Paper" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" >
-                            <label for="service1"> Paper</label><br>
-
-                            <input type="checkbox" id="service2" name="services[]" value="Metal" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" >
-                            <label for="service2"> Metal</label><br>
-
-                            <input type="checkbox" id="service3" name="services[]" value="Fabric" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" >
-                            <label for="service3"> Fabric</label><br>
-
-                            <input type="checkbox" id="service4" name="services[]" value="Glass" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" >
-                            <label for="service3"> Glass</label><br>
-
-                            <x-input-error :messages="$errors->get('services')" class="mt-2" />
-                        </div>
-
-                        <!-- Address -->
-                        <div class="mt-4">
-                            <x-input-label for="address" :value="__('Address')" />
-                            <textarea id="address" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" rows="5" name="address" required >{{ old('address') }}</textarea>
-                            <x-input-error :messages="$errors->get('address')" class="mt-2" />
-                        </div>
-
-                        <!-- Premise Type -->
-                        <div class="mt-4">
-                            <x-input-label for="type" :value="__('Premise Type')" />
-
-                            <select id="type" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" name="is_dropbox" required >
-                                <option value selected>Please select</option>
-                                <option disabled></option>
-                                <option value="0" >Premise</option>
-                                <option value="1" >Dropbox</option>
-                            </select>
-
-                            <x-input-error :messages="$errors->get('is_dropbox')" class="mt-2" />
-                        </div>
-
-                        <!-- Operational Hour -->
-                        <div class="mt-4">
-                            <x-input-label for="operation_hour" :value="__('Operational Hour')" />
-                            <x-text-input id="operation_hour" class="block mt-1 w-full" type="text" name="operation_hour" :value="old('operation_hour')" />
-                            <x-input-error :messages="$errors->get('operation_hour')" class="mt-2" />
-                        </div>
-
-                        <div class="flex items-center justify-end mt-4">
-                            <x-primary-button class="ms-4">
-                                {{ __('Submit') }}
-                            </x-primary-button>
-                        </div>
-                    </form>
+@section('body')
+<main class="app-main"> <!--begin::App Content Header-->
+    <div class="app-content-header"> <!--begin::Container-->
+        <div class="container-fluid"> <!--begin::Row-->
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="mb-0">Recycle Center</h3>
                 </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item"><a href="{{ route("dashboard") }}">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            Recycle Center
+                        </li>
+                    </ol>
+                </div>
+            </div> <!--end::Row-->
+        </div> <!--end::Container-->
+    </div> <!--end::App Content Header--> <!--begin::App Content-->
+    <div class="app-content"> <!--begin::Container-->
+        <div class="container-fluid"> <!--begin::Row-->
+            <div class="row">
+                <div class="col-12"> <!-- Default box -->
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">Register New Recycle Center</h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="{{ route('center.store') }}" novalidate>
+                                @csrf
+
+                                <!-- Name -->
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Branch Name</label>
+                                    <input type="text" class="form-control @error('title') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required autofocus >
+
+                                    @error("name")
+                                    <div class="form-text">
+                                        <font color="red">{{ $message }}</font>
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Services -->
+                                <div class="mb-3">
+                                    <label for="services" class="form-label">Services Offered</label>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service1" name="services[]" value="Paper">
+                                        <label class="form-check-label" for="service1"> Paper</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service2" name="services[]" value="Metal">
+                                        <label class="form-check-label" for="service2"> Metal</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service3" name="services[]" value="Fabric">
+                                        <label class="form-check-label" for="service3"> Fabric</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service4" name="services[]" value="Glass">
+                                        <label class="form-check-label" for="service4"> Glass</label>
+                                    </div>
+
+                                    @error("services")
+                                    <div class="form-text">
+                                        <font color="red">{{ $message }}</font>
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Address -->
+                                <div class="mb-3">
+                                    <label for="address" class="form-label">Branch Address</label>
+                                    <textarea id="address" class="form-control" rows="5" name="address" required>{{ old('address') }}</textarea>
+
+                                    @error("address")
+                                    <div class="form-text">
+                                        <font color="red">{{ $message }}</font>
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Premise Type -->
+                                <div class="mb-3">
+                                    <label for="is_dropbox" class="form-label">Branch Premise Type</label>
+                                    <select id="is_dropbox" class="form-select" name="is_dropbox" required>
+                                        <option value selected>Please select</option>
+                                        <option disabled></option>
+                                        <option value="0" >Premise</option>
+                                        <option value="1" >Dropbox</option>
+                                    </select>
+
+                                    @error("is_dropbox")
+                                    <div class="form-text">
+                                        <font color="red">{{ $message }}</font>
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Operational Hour -->
+                                <div class="mb-3">
+                                    <label for="operation_hour" class="form-label">Branch Operation Hour</label>
+                                    <input type="text" class="form-control" id="operation_hour" name="operation_hour" value="{{ old('operation_hour') }}" >
+
+                                    @error("operation_hour")
+                                    <div class="form-text">
+                                        <font color="red">{{ $message }}</font>
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <div class="flex items-center justify-end mt-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        {{ __('Submit') }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div> <!-- /.card-body -->
+                    </div> <!-- /.card -->
+                </div>
+            </div> <!--end::Row-->
+        </div> <!--end::Container-->
+    </div> <!--end::App Content-->
+</main> <!--end::App Main-->
+@endsection
