@@ -25,6 +25,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('center', RecyclingCenterController::class);
     Route::resource('owner', OwnerController::class);
     Route::resource('branch', RecyclingCenterController::class);
+
+    Route::put('/center/{id}/verify', [RecyclingCenterController::class, 'verify'])->name('center.verify');
+    Route::put('/owner/{id}/verify', [OwnerController::class, 'verify'])->name('owner.verify');
 });
 
 require __DIR__.'/auth.php';

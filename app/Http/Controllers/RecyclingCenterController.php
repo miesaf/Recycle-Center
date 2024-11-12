@@ -157,4 +157,18 @@ class RecyclingCenterController extends Controller
 
         return redirect()->route("center.index");
     }
+
+    public function verify(string $id)
+    {
+        $recyclingCenter = RecyclingCenter::find($id);
+        $recyclingCenter->is_verified = true;
+
+        if($recyclingCenter->update()) {
+            Session::flash('success', 'Recycle center branch verified!');
+        } else {
+            Session::flash('danger', 'Failed to verify recycle center branch!');
+        }
+
+        return redirect()->route("center.index");
+    }
 }

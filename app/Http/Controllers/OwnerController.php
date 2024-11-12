@@ -45,7 +45,7 @@ class OwnerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit(string $id)
     {
         $owner = User::where("id", "=", $id)->first();
         return view("owner.edit")->with('owner', $owner);
@@ -54,7 +54,7 @@ class OwnerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
         $validated = $request->validate([
             'name' => 'required|max:255',
@@ -83,6 +83,20 @@ class OwnerController extends Controller
             Session::flash('success', 'Recycle center owner deleted!');
         } else {
             Session::flash('danger', 'Failed to delete recycle center owner!');
+        }
+
+        return redirect()->route("owner.index");
+    }
+
+    public function verify(string $id)
+    {
+        $user = User::where("id", "=", $id)->first();
+        $user->is_verified = true;
+
+        if($user->update()) {
+            Session::flash('success', 'Recycle center owner verified!');
+        } else {
+            Session::flash('danger', 'Failed to verify recycle center owner!');
         }
 
         return redirect()->route("owner.index");

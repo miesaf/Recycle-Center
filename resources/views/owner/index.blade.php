@@ -71,6 +71,13 @@
                                         <td>{{ $owner->is_verified ? "Verified" : null }}</td>
                                         <td>
                                             {{-- <button class="btn btn-success btn-sm" href="{{ route('center.edit', $owner->id) }}">Approve</button> --}}
+                                            @if($owner->is_verified != 1)
+                                            <form id="verify_{{ $owner->id }}" method="POST" action="{{ route('owner.verify', $owner->id) }}">
+                                                @csrf
+                                                @method("PUT")
+                                                <button type="submit" class="btn btn-success btn-sm" form="verify_{{ $owner->id }}">Verify</button>
+                                            </form>
+                                            @endif
 
                                             <a class="btn btn-warning btn-sm" href="{{ route('owner.edit', $owner->id) }}">Edit</a>
 

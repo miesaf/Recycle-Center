@@ -61,6 +61,7 @@
                                         <th>Address</th>
                                         <th>Type</th>
                                         <th>Operational Hour</th>
+                                        <th>Verified</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -82,8 +83,15 @@
                                         <td>{{ $recyclingCenter->address }}</td>
                                         <td>{{ $recyclingCenter->is_dropbox ? "Dropbox" : "Premise" }}</td>
                                         <td>{{ $recyclingCenter->operation_hour }}</td>
+                                        <td>{{ $recyclingCenter->is_verified ? "Verified" : null }}</td>
                                         <td>
-                                            {{-- <button class="btn btn-success btn-sm" href="{{ route('center.edit', $recyclingCenter->id) }}">Approve</button> --}}
+                                            @if($recyclingCenter->is_verified != 1)
+                                            <form id="verify_{{ $recyclingCenter->id }}" method="POST" action="{{ route('center.verify', $recyclingCenter->id) }}">
+                                                @csrf
+                                                @method("PUT")
+                                                <button type="submit" class="btn btn-success btn-sm" form="verify_{{ $recyclingCenter->id }}">Verify</button>
+                                            </form>
+                                            @endif
 
                                             <a class="btn btn-warning btn-sm" href="{{ route('center.edit', $recyclingCenter->id) }}">Edit</a>
 
