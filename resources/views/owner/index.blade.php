@@ -46,12 +46,12 @@
                             <h3 class="card-title">List of Recycle Centers Owner</h3>
                         </div>
                         <div class="card-body">
-                            <a class="btn btn-primary btn-sm" href="{{ route('owner.create') }}" >
+                            {{-- <a class="btn btn-primary btn-sm" href="{{ route('owner.create') }}" >
                                 {{ __('Add Recycle Center Owner') }}
                             </a>
 
                             <br/>
-                            <br/>
+                            <br/> --}}
 
                             <table class="table table-bordered table-striped">
                                 <thead>
