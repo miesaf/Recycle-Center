@@ -120,6 +120,7 @@
                                     @enderror
                                 </div>
 
+                                @if (auth()->user()->is_admin)
                                 <!-- Premise Owner -->
                                 <div class="mb-3">
                                     <label for="owner" class="form-label">Branch Owner</label>
@@ -137,6 +138,7 @@
                                     </div>
                                     @enderror
                                 </div>
+                                @endif
 
                                 <div class="flex items-center justify-end mt-4">
                                     <button type="submit" class="btn btn-primary">
