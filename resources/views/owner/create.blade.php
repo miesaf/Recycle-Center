@@ -25,17 +25,16 @@
                 <div class="col-12"> <!-- Default box -->
                     <div class="card card-primary card-outline">
                         <div class="card-header">
-                            <h3 class="card-title">Update Recycle Center Information</h3>
+                            <h3 class="card-title">Register New Recycle Center</h3>
                         </div>
                         <div class="card-body">
-                            <form method="POST" action="{{ route('center.update', $recyclingCenter->id) }}" novalidate>
+                            <form method="POST" action="{{ route('center.store') }}" novalidate>
                                 @csrf
-                                @method("PUT")
 
                                 <!-- Name -->
                                 <div class="mb-3">
                                     <label for="name" class="form-label">Branch Name</label>
-                                    <input type="text" class="form-control @error('title') is-invalid @enderror" id="name" name="name" value="{{ $recyclingCenter->name }}" required autofocus >
+                                    <input type="text" class="form-control @error('title') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required autofocus >
 
                                     @error("name")
                                     <div class="form-text">
@@ -48,27 +47,23 @@
                                 <div class="mb-3">
                                     <label for="services" class="form-label">Services Offered</label>
 
-                                    @php
-                                        $servicesArr = json_decode($recyclingCenter->services)->services;
-                                    @endphp
-
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="service1" name="services[]" value="Paper" {{ in_array("Paper", $servicesArr) ? "checked" : null }}>
+                                        <input class="form-check-input" type="checkbox" id="service1" name="services[]" value="Paper">
                                         <label class="form-check-label" for="service1"> Paper</label>
                                     </div>
 
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="service2" name="services[]" value="Metal" {{ in_array("Metal", $servicesArr) ? "checked" : null }}>
+                                        <input class="form-check-input" type="checkbox" id="service2" name="services[]" value="Metal">
                                         <label class="form-check-label" for="service2"> Metal</label>
                                     </div>
 
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="service3" name="services[]" value="Fabric" {{ in_array("Fabric", $servicesArr) ? "checked" : null }}>
+                                        <input class="form-check-input" type="checkbox" id="service3" name="services[]" value="Fabric">
                                         <label class="form-check-label" for="service3"> Fabric</label>
                                     </div>
 
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="service4" name="services[]" value="Glass" {{ in_array("Glass", $servicesArr) ? "checked" : null }}>
+                                        <input class="form-check-input" type="checkbox" id="service4" name="services[]" value="Glass">
                                         <label class="form-check-label" for="service4"> Glass</label>
                                     </div>
 
@@ -82,7 +77,7 @@
                                 <!-- Address -->
                                 <div class="mb-3">
                                     <label for="address" class="form-label">Branch Address</label>
-                                    <textarea id="address" class="form-control" rows="5" name="address" required>{{ $recyclingCenter->address }}</textarea>
+                                    <textarea id="address" class="form-control" rows="5" name="address" required>{{ old('address') }}</textarea>
 
                                     @error("address")
                                     <div class="form-text">
@@ -97,8 +92,8 @@
                                     <select id="is_dropbox" class="form-select" name="is_dropbox" required>
                                         <option value selected>Please select</option>
                                         <option disabled></option>
-                                        <option value="0" {{ $recyclingCenter->is_dropbox ? null : "selected" }}>Premise</option>
-                                        <option value="1" {{ $recyclingCenter->is_dropbox ? "selected" : null }}>Dropbox</option>
+                                        <option value="0" >Premise</option>
+                                        <option value="1" >Dropbox</option>
                                     </select>
 
                                     @error("is_dropbox")
@@ -111,7 +106,7 @@
                                 <!-- Operational Hour -->
                                 <div class="mb-3">
                                     <label for="operation_hour" class="form-label">Branch Operation Hour</label>
-                                    <input type="text" class="form-control" id="operation_hour" name="operation_hour" value="{{ $recyclingCenter->operation_hour }}" >
+                                    <input type="text" class="form-control" id="operation_hour" name="operation_hour" value="{{ old('operation_hour') }}" >
 
                                     @error("operation_hour")
                                     <div class="form-text">
@@ -120,7 +115,6 @@
                                     @enderror
                                 </div>
 
-                                @if (auth()->user()->is_admin)
                                 <!-- Premise Owner -->
                                 <div class="mb-3">
                                     <label for="owner" class="form-label">Branch Owner</label>
@@ -128,7 +122,7 @@
                                         <option value selected>Please select</option>
                                         <option disabled></option>
                                         @foreach($owners as $owner)
-                                        <option value="{{ $owner->id }}"  {{ ($recyclingCenter->owner == $owner->id) ? "selected" : null }}>{{ $owner->name }} ({{ $owner->email }})</option>
+                                        <option value="{{ $owner->id }}" >{{ $owner->name }} ({{ $owner->email }})</option>
                                         @endforeach
                                     </select>
 
@@ -138,11 +132,10 @@
                                     </div>
                                     @enderror
                                 </div>
-                                @endif
 
                                 <div class="flex items-center justify-end mt-4">
                                     <button type="submit" class="btn btn-primary">
-                                        {{ __('Update') }}
+                                        {{ __('Submit') }}
                                     </button>
                                 </div>
                             </form>

@@ -32,6 +32,9 @@
                     </div>
                     <div class="input-group mb-3"> <input type="password" class="form-control" name="password" placeholder="Password">
                         <div class="input-group-text"> <span class="bi bi-lock-fill"></span> </div>
+                    </div>
+                    <div class="input-group mb-3"> <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm Password">
+                        <div class="input-group-text"> <span class="bi bi-lock-fill"></span> </div>
                     </div> <!--begin::Row-->
                     <div class="row">
                         <div class="col-4">

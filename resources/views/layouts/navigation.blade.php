@@ -22,22 +22,22 @@
                     </a>
                 </li>
 
-                @if(auth()->user()->is_admin)
                 <li class="nav-item">
                     <a href="{{ route("center.index") }}" class="nav-link {{ request()->routeIs('center.*') ? 'active' : ''}}"> <i class="nav-icon bi bi-recycle"></i>
                         <p>Recycle Center</p>
                     </a>
                 </li>
 
+                @if(auth()->user()->is_admin)
                 <li class="nav-item">
-                    <a href="{{ route("dashboard") }}" class="nav-link {{ request()->is('owner') ? 'active' : ''}}"> <i class="nav-icon bi bi-people-fill"></i>
+                    <a href="{{ route("owner.index") }}" class="nav-link {{ request()->routeIs('owner.*') ? 'active' : ''}}"> <i class="nav-icon bi bi-people-fill"></i>
                         <p>Registered Owner</p>
                     </a>
                 </li>
-                @else
+
                 <li class="nav-item">
-                    <a href="{{ route("branch.index") }}" class="nav-link {{ request()->routeIs('branch.*') ? 'active' : ''}}"> <i class="nav-icon bi bi-recycle"></i>
-                    <p>Recycle Center</p>
+                    <a href="{{ route("admin.index") }}" class="nav-link {{ request()->routeIs('admin.*') ? 'active' : ''}}"> <i class="nav-icon bi bi-person-vcard-fill"></i>
+                        <p>Admin</p>
                     </a>
                 </li>
                 @endif

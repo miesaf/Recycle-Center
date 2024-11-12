@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RecyclingCenter;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Session;
 use Auth;
@@ -17,9 +18,9 @@ class RecyclingCenterController extends Controller
         if(Auth::user()->is_admin) {
             $recyclingCenters = RecyclingCenter::all();
         } else {
-            $recyclingCenters = RecyclingCenter::all();
+            $recyclingCenters = RecyclingCenter::where("owner", "=", Auth::user()->id)->get();
         }
-        
+
         return view("center.index")->with('recyclingCenters', $recyclingCenters);
     }
 
@@ -28,7 +29,8 @@ class RecyclingCenterController extends Controller
      */
     public function create()
     {
-        return view("center.create");
+        $owners = User::select("id", "name", "email")->where("is_admin", "<>", 1)->get();
+        return view("center.create")->with('owners', $owners);
     }
 
     /**
@@ -36,13 +38,24 @@ class RecyclingCenterController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|max:255',
-            'services' => 'required|array|min:1',
-            'address' => 'required',
-            'is_dropbox' => 'required',
-            'operation_hour' => 'required_if:is_dropbox,0',
-        ]);
+        if(Auth::user()->is_admin) {
+            $validated = $request->validate([
+                'name' => 'required|max:255',
+                'services' => 'required|array|min:1',
+                'address' => 'required',
+                'is_dropbox' => 'required',
+                'operation_hour' => 'required_if:is_dropbox,0',
+                'owner' => 'required|integer|exists:users,id',
+            ]);
+        } else {
+            $validated = $request->validate([
+                'name' => 'required|max:255',
+                'services' => 'required|array|min:1',
+                'address' => 'required',
+                'is_dropbox' => 'required',
+                'operation_hour' => 'required_if:is_dropbox,0',
+            ]);
+        }
 
         $recyclingCenter = new RecyclingCenter;
         $recyclingCenter->name = $request->name;
@@ -65,6 +78,12 @@ class RecyclingCenterController extends Controller
         $recyclingCenter->address = $request->address;
         $recyclingCenter->is_dropbox = $request->is_dropbox;
         $recyclingCenter->operation_hour = $request->operation_hour;
+
+        if(Auth::user()->is_admin) {
+            $recyclingCenter->owner = $request->owner;
+        } else {
+            $recyclingCenter->owner = Auth::user()->id;
+        }
 
         if($recyclingCenter->save()) {
             Session::flash('success', 'Recycle center created!');
@@ -89,8 +108,9 @@ class RecyclingCenterController extends Controller
      */
     public function edit($id)
     {
+        $owners = User::select("id", "name", "email")->where("is_admin", "<>", 1)->get();
         $recyclingCenter = RecyclingCenter::find($id);
-        return view("center.edit")->with('recyclingCenter', $recyclingCenter);
+        return view("center.edit")->with('recyclingCenter', $recyclingCenter)->with('owners', $owners);
     }
 
     /**
@@ -98,13 +118,26 @@ class RecyclingCenterController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|max:255',
-            'services' => 'required|array|min:1',
-            'address' => 'required',
-            'is_dropbox' => 'required',
-            'operation_hour' => 'required_if:is_dropbox,0',
-        ]);
+        if(Auth::user()->is_admin) {
+            $validated = $request->validate([
+                'name' => 'required|max:255',
+                'services' => 'required|array|min:1',
+                'address' => 'required',
+                'is_dropbox' => 'required',
+                'operation_hour' => 'required_if:is_dropbox,0',
+                'owner' => 'required|integer|exists:users,id',
+            ]);
+        } else {
+            if(Auth::user()->is_admin) {
+                $validated = $request->validate([
+                    'name' => 'required|max:255',
+                    'services' => 'required|array|min:1',
+                    'address' => 'required',
+                    'is_dropbox' => 'required',
+                    'operation_hour' => 'required_if:is_dropbox,0',
+                ]);
+            }
+        }
 
         $recyclingCenter = RecyclingCenter::find($id);
         $recyclingCenter->name = $request->name;
@@ -128,6 +161,12 @@ class RecyclingCenterController extends Controller
         $recyclingCenter->is_dropbox = $request->is_dropbox;
         $recyclingCenter->operation_hour = $request->operation_hour;
 
+        if(Auth::user()->is_admin) {
+            $recyclingCenter->owner = $request->owner;
+        } else {
+            $recyclingCenter->owner = Auth::user()->id;
+        }
+
         if($recyclingCenter->update()) {
             Session::flash('success', 'Recycle center updated!');
         } else {
@@ -146,6 +185,20 @@ class RecyclingCenterController extends Controller
             Session::flash('success', 'Recycle center deleted!');
         } else {
             Session::flash('danger', 'Failed to delete recycle center!');
+        }
+
+        return redirect()->route("center.index");
+    }
+
+    public function verify(string $id)
+    {
+        $recyclingCenter = RecyclingCenter::find($id);
+        $recyclingCenter->is_verified = true;
+
+        if($recyclingCenter->update()) {
+            Session::flash('success', 'Recycle center verified!');
+        } else {
+            Session::flash('danger', 'Failed to verify recycle center!');
         }
 
         return redirect()->route("center.index");
