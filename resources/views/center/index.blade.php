@@ -85,7 +85,7 @@
                                         <td>{{ $recyclingCenter->operation_hour }}</td>
                                         <td>{{ $recyclingCenter->is_verified ? "Verified" : null }}</td>
                                         <td>
-                                            @if($recyclingCenter->is_verified != 1)
+                                            @if(($recyclingCenter->is_verified != 1) && (auth()->user()->is_admin))
                                             <form id="verify_{{ $recyclingCenter->id }}" method="POST" action="{{ route('center.verify', $recyclingCenter->id) }}">
                                                 @csrf
                                                 @method("PUT")

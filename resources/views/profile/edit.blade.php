@@ -23,6 +23,24 @@
         <div class="container-fluid"> <!--begin::Row-->
             <div class="row">
                 <div class="col-12"> <!-- Default box -->
+                    @session("success")
+                    <div class="alert alert-success" role="alert">
+                        {{ session()->get("success") }}
+                    </div>
+                    @endsession
+
+                    @session("warning")
+                    <div class="alert alert-warning" role="alert">
+                        {{ session()->get("warning") }}
+                    </div>
+                    @endsession
+
+                    @session("danger")
+                    <div class="alert alert-danger" role="alert">
+                        {{ session()->get("danger") }}
+                    </div>
+                    @endsession
+                    
                     <div class="card card-primary card-outline">
                         <div class="card-header">
                             <h3 class="card-title">Update Profile Information</h3>

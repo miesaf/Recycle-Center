@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Session;
 
 class ProfileController extends Controller
 {
@@ -32,7 +33,11 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
-        $request->user()->save();
+        if($request->user()->save()) {
+            Session::flash('success', 'Profile updated!');
+        } else {
+            Session::flash('danger', 'Failed to update profile!');
+        }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
