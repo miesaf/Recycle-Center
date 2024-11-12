@@ -6,7 +6,7 @@
         <div class="container-fluid"> <!--begin::Row-->
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">Recycle Center Owners</h3>
+                    <h3 class="mb-0">System Administrator</h3>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
@@ -43,15 +43,15 @@
 
                     <div class="card card-primary card-outline">
                         <div class="card-header">
-                            <h3 class="card-title">List of Recycle Centers Owner</h3>
+                            <h3 class="card-title">List of Administrator</h3>
                         </div>
                         <div class="card-body">
-                            {{-- <a class="btn btn-primary btn-sm" href="{{ route('owner.create') }}" >
-                                {{ __('Add Recycle Center Owner') }}
+                            <a class="btn btn-primary btn-sm" href="{{ route('admin.create') }}" >
+                                {{ __('Add New Admin') }}
                             </a>
 
                             <br/>
-                            <br/> --}}
+                            <br/>
 
                             <table class="table table-bordered table-striped">
                                 <thead>
@@ -65,27 +65,19 @@
                                 </thead>
 
                                 <tbody>
-                                    @foreach ($owners as $idx => $owner)
+                                    @foreach ($admins as $idx  => $admin)
                                     <tr>
                                         <td>{{ $idx + 1 }}</td>
-                                        <td>{{ $owner->name }}</td>
-                                        <td>{{ $owner->email }}</td>
-                                        <td>{{ $owner->is_verified ? "Verified" : null }}</td>
+                                        <td>{{ $admin->name }}</td>
+                                        <td>{{ $admin->email }}</td>
+                                        <td>{{ $admin->is_verified ? "Verified" : null }}</td>
                                         <td>
-                                            @if($owner->is_verified != 1)
-                                            <form id="verify_{{ $owner->id }}" method="POST" action="{{ route('owner.verify', $owner->id) }}">
-                                                @csrf
-                                                @method("PUT")
-                                                <button type="submit" class="btn btn-success btn-sm" form="verify_{{ $owner->id }}">Verify</button>
-                                            </form>
-                                            @endif
+                                            <a class="btn btn-warning btn-sm" href="{{ route('admin.edit', $admin->id) }}">Edit</a>
 
-                                            <a class="btn btn-warning btn-sm" href="{{ route('owner.edit', $owner->id) }}">Edit</a>
-
-                                            <form id="del_{{ $owner->id }}" method="POST" action="{{ route('owner.destroy', $owner->id) }}">
+                                            <form id="del_{{ $admin->id }}" method="POST" action="{{ route('admin.destroy', $admin->id) }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm" form="del_{{ $owner->id }}">Delete</button>
+                                                <button type="submit" class="btn btn-danger btn-sm" form="del_{{ $admin->id }}">Delete</button>
                                             </form>
                                         </td>
                                     </tr>

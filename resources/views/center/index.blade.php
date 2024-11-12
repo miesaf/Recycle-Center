@@ -56,6 +56,7 @@
                             <table class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
+                                        <th>#</th>
                                         <th>Name</th>
                                         <th>Services</th>
                                         <th>Address</th>
@@ -67,8 +68,9 @@
                                 </thead>
 
                                 <tbody>
-                                    @foreach ($recyclingCenters as $recyclingCenter)
+                                    @foreach ($recyclingCenters as $idx => $recyclingCenter)
                                     <tr>
+                                        <td>{{ $idx + 1 }}</td>
                                         <td>{{ $recyclingCenter->name }}</td>
                                         <td>
                                             <ul>
