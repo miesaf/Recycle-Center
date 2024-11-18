@@ -91,6 +91,30 @@
                                     @enderror
                                 </div>
 
+                                <!-- Latitude -->
+                                <div class="mb-3">
+                                    <label for="latitude" class="form-label">Branch Latitude</label>
+                                    <input type="text" class="form-control @error('latitude') is-invalid @enderror" id="latitude" name="latitude" value="{{ $recyclingCenter->latitude }}" required autofocus >
+
+                                    @error("latitude")
+                                    <div class="form-text">
+                                        <font color="red">{{ $message }}</font>
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Longitude -->
+                                <div class="mb-3">
+                                    <label for="longitude" class="form-label">Branch Longitude</label>
+                                    <input type="text" class="form-control @error('longitude') is-invalid @enderror" id="longitude" name="longitude" value="{{ $recyclingCenter->longitude }}" required autofocus >
+
+                                    @error("longitude")
+                                    <div class="form-text">
+                                        <font color="red">{{ $message }}</font>
+                                    </div>
+                                    @enderror
+                                </div>
+
                                 <!-- Premise Type -->
                                 <div class="mb-3">
                                     <label for="is_dropbox" class="form-label">Branch Premise Type</label>

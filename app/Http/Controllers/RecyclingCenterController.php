@@ -46,6 +46,8 @@ class RecyclingCenterController extends Controller
                 'is_dropbox' => 'required',
                 'operation_hour' => 'required_if:is_dropbox,0',
                 'owner' => 'required|integer|exists:users,id',
+                'latitude' => 'required|numeric|between:-90,90', // Latitude must be between -90 and 90
+                'longitude' => 'required|numeric|between:-180,180', // Longitude must be between -180 and 180
             ]);
         } else {
             $validated = $request->validate([
@@ -54,6 +56,8 @@ class RecyclingCenterController extends Controller
                 'address' => 'required',
                 'is_dropbox' => 'required',
                 'operation_hour' => 'required_if:is_dropbox,0',
+                'latitude' => 'required|numeric|between:-90,90', // Latitude must be between -90 and 90
+                'longitude' => 'required|numeric|between:-180,180', // Longitude must be between -180 and 180
             ]);
         }
 
@@ -78,6 +82,8 @@ class RecyclingCenterController extends Controller
         $recyclingCenter->address = $request->address;
         $recyclingCenter->is_dropbox = $request->is_dropbox;
         $recyclingCenter->operation_hour = $request->operation_hour;
+        $recyclingCenter->latitude = $request->latitude;
+        $recyclingCenter->longitude = $request->longitude;
 
         if(Auth::user()->is_admin) {
             $recyclingCenter->owner = $request->owner;
@@ -126,6 +132,8 @@ class RecyclingCenterController extends Controller
                 'is_dropbox' => 'required',
                 'operation_hour' => 'required_if:is_dropbox,0',
                 'owner' => 'required|integer|exists:users,id',
+                'latitude' => 'required|numeric|between:-90,90', // Latitude must be between -90 and 90
+                'longitude' => 'required|numeric|between:-180,180', // Longitude must be between -180 and 180
             ]);
         } else {
             if(Auth::user()->is_admin) {
@@ -135,6 +143,8 @@ class RecyclingCenterController extends Controller
                     'address' => 'required',
                     'is_dropbox' => 'required',
                     'operation_hour' => 'required_if:is_dropbox,0',
+                    'latitude' => 'required|numeric|between:-90,90', // Latitude must be between -90 and 90
+                    'longitude' => 'required|numeric|between:-180,180', // Longitude must be between -180 and 180
                 ]);
             }
         }
@@ -160,6 +170,8 @@ class RecyclingCenterController extends Controller
         $recyclingCenter->address = $request->address;
         $recyclingCenter->is_dropbox = $request->is_dropbox;
         $recyclingCenter->operation_hour = $request->operation_hour;
+        $recyclingCenter->latitude = $request->latitude;
+        $recyclingCenter->longitude = $request->longitude;
 
         if(Auth::user()->is_admin) {
             $recyclingCenter->owner = $request->owner;
@@ -202,5 +214,10 @@ class RecyclingCenterController extends Controller
         }
 
         return redirect()->route("center.index");
+    }
+
+    public function getLocations()
+    {
+        return response()->json(RecyclingCenter::all());
     }
 }
