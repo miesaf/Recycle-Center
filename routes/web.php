@@ -11,8 +11,20 @@ use Illuminate\Support\Facades\Route;
 // })->name('welcome');
 
 Route::get('/', function () {
-    return view('map');
+    return view('home');
 })->name('welcome');
+
+Route::get('/map', function () {
+    return view('map');
+})->name('map');
+
+Route::get('/services', function () {
+    return view('services');
+})->name('services');
+
+Route::get('/info', function () {
+    return view('info');
+})->name('info');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
