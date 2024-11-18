@@ -82,7 +82,11 @@
                                                 @endforeach
                                             </ul>
                                         </td>
-                                        <td>{{ $recyclingCenter->address }}</td>
+                                        <td>
+                                            {{ $recyclingCenter->address }}
+                                            <br/><br/>
+                                            Lat: {{ $recyclingCenter->latitude }} | Long: {{ $recyclingCenter->longitude }}
+                                        </td>
                                         <td>{{ $recyclingCenter->is_dropbox ? "Dropbox" : "Premise" }}</td>
                                         <td>{{ $recyclingCenter->operation_hour }}</td>
                                         <td>{{ $recyclingCenter->is_verified ? "Verified" : null }}</td>
