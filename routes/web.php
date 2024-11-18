@@ -15,7 +15,7 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::get('/map', function () {
-    return view('map');
+    return view('map2');
 })->name('map');
 
 Route::get('/services', function () {
@@ -29,6 +29,8 @@ Route::get('/info', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/api/locations', [RecyclingCenterController::class, 'getLocations']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
