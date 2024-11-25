@@ -71,7 +71,7 @@
                                     @foreach ($recyclingCenters as $idx => $recyclingCenter)
                                     <tr>
                                         <td>{{ $idx + 1 }}</td>
-                                        <td>{{ $recyclingCenter->name }}</td>
+                                        <td>{{ $recyclingCenter->name }}@if (auth()->user()->is_admin) <br/>by {{ $recyclingCenter->ownerInfo->name }} @endif</td>
                                         <td>
                                             <ul>
                                                 @php

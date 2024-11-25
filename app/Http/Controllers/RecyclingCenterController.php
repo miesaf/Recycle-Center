@@ -16,7 +16,7 @@ class RecyclingCenterController extends Controller
     public function index()
     {
         if(Auth::user()->is_admin) {
-            $recyclingCenters = RecyclingCenter::all();
+            $recyclingCenters = RecyclingCenter::with('ownerInfo')->get();
         } else {
             $recyclingCenters = RecyclingCenter::where("owner", "=", Auth::user()->id)->get();
         }
