@@ -22,13 +22,13 @@
                     </a>
                 </li>
 
+                @if(auth()->user()->is_admin)
                 <li class="nav-item">
                     <a href="{{ route("center.index") }}" class="nav-link {{ request()->routeIs('center.*') ? 'active' : ''}}"> <i class="nav-icon bi bi-recycle"></i>
                         <p>Recycle Center</p>
                     </a>
                 </li>
 
-                @if(auth()->user()->is_admin)
                 <li class="nav-item">
                     <a href="{{ route("owner.index") }}" class="nav-link {{ request()->routeIs('owner.*') ? 'active' : ''}}"> <i class="nav-icon bi bi-people-fill"></i>
                         <p>Registered Owner</p>
@@ -38,6 +38,12 @@
                 <li class="nav-item">
                     <a href="{{ route("admin.index") }}" class="nav-link {{ request()->routeIs('admin.*') ? 'active' : ''}}"> <i class="nav-icon bi bi-person-vcard-fill"></i>
                         <p>Admin</p>
+                    </a>
+                </li>
+                @else
+                <li class="nav-item">
+                    <a href="{{ route("center.create") }}" class="nav-link {{ request()->routeIs('center.*') ? 'active' : ''}}"> <i class="nav-icon bi bi-recycle"></i>
+                        <p>Add Recycle Center</p>
                     </a>
                 </li>
                 @endif
