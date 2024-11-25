@@ -59,7 +59,7 @@
                                         <th>#</th>
                                         <th>Name</th>
                                         <th>Services</th>
-                                        <th>Address</th>
+                                        <th>Address / Phone Number / Coordinate</th>
                                         <th>Type</th>
                                         <th>Operational Hour</th>
                                         <th>Verified</th>
@@ -85,6 +85,8 @@
                                         <td>
                                             {{ $recyclingCenter->address }}
                                             <br/><br/>
+                                            Phone Number: {{ $recyclingCenter->phone_no }}
+                                            <br/>
                                             Lat: {{ $recyclingCenter->latitude }} | Long: {{ $recyclingCenter->longitude }}
                                         </td>
                                         <td>{{ $recyclingCenter->is_dropbox ? "Dropbox" : "Premise" }}</td>

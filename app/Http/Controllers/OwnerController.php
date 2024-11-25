@@ -59,11 +59,13 @@ class OwnerController extends Controller
         $validated = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email',
+            'phone_no' => 'required|max:20',
         ]);
 
         $owner = User::find($id);
         $owner->name = $request->name;
         $owner->email = $request->email;
+        $owner->phone_no = $request->phone_no;
 
         if($owner->update()) {
             Session::flash('success', 'Recycle center owner updated!');

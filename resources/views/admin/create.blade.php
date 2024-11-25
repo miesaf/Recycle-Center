@@ -55,6 +55,18 @@
                                     @enderror
                                 </div>
 
+                                <!-- Phone Number -->
+                                <div class="mb-3">
+                                    <label for="phone_no" class="form-label">Phone Number</label>
+                                    <input type="text" class="form-control @error('phone_no') is-invalid @enderror" id="phone_no" name="phone_no" value="{{ old('phone_no') }}" required autofocus >
+
+                                    @error("phone_no")
+                                    <div class="form-text">
+                                        <font color="red">{{ $message }}</font>
+                                    </div>
+                                    @enderror
+                                </div>
+
                                 <!-- Password -->
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Password</label>

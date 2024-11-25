@@ -41,6 +41,7 @@ class RecyclingCenterController extends Controller
         if(Auth::user()->is_admin) {
             $validated = $request->validate([
                 'name' => 'required|max:255',
+                'phone_no' => 'required|max:20',
                 'services' => 'required|array|min:1',
                 'address' => 'required',
                 'is_dropbox' => 'required',
@@ -52,6 +53,7 @@ class RecyclingCenterController extends Controller
         } else {
             $validated = $request->validate([
                 'name' => 'required|max:255',
+                'phone_no' => 'required|max:20',
                 'services' => 'required|array|min:1',
                 'address' => 'required',
                 'is_dropbox' => 'required',
@@ -63,6 +65,7 @@ class RecyclingCenterController extends Controller
 
         $recyclingCenter = new RecyclingCenter;
         $recyclingCenter->name = $request->name;
+        $recyclingCenter->phone_no = $request->phone_no;
 
         // $services = [];
         $services = "{ \"services\" : [";
@@ -127,6 +130,7 @@ class RecyclingCenterController extends Controller
         if(Auth::user()->is_admin) {
             $validated = $request->validate([
                 'name' => 'required|max:255',
+                'phone_no' => 'required|max:20',
                 'services' => 'required|array|min:1',
                 'address' => 'required',
                 'is_dropbox' => 'required',
@@ -139,6 +143,7 @@ class RecyclingCenterController extends Controller
             if(Auth::user()->is_admin) {
                 $validated = $request->validate([
                     'name' => 'required|max:255',
+                    'phone_no' => 'required|max:20',
                     'services' => 'required|array|min:1',
                     'address' => 'required',
                     'is_dropbox' => 'required',
@@ -151,6 +156,7 @@ class RecyclingCenterController extends Controller
 
         $recyclingCenter = RecyclingCenter::find($id);
         $recyclingCenter->name = $request->name;
+        $recyclingCenter->phone_no = $request->phone_no;
 
         // $services = [];
         $services = "{ \"services\" : [";

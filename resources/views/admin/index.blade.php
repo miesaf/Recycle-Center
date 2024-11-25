@@ -58,7 +58,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Name</th>
-                                        <th>Email</th>
+                                        <th>Email / Phone Number</th>
                                         <th>Verified</th>
                                         <th>Action</th>
                                     </tr>
@@ -69,7 +69,7 @@
                                     <tr>
                                         <td>{{ $idx + 1 }}</td>
                                         <td>{{ $admin->name }}</td>
-                                        <td>{{ $admin->email }}</td>
+                                        <td>{{ $admin->email }}<br/>{{ $admin->phone_no }}</td>
                                         <td>{{ $admin->is_verified ? "Verified" : null }}</td>
                                         <td>
                                             <a class="btn btn-warning btn-sm" href="{{ route('admin.edit', $admin->id) }}">Edit</a>

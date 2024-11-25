@@ -56,6 +56,18 @@
                                     @enderror
                                 </div>
 
+                                <!-- Phone Number -->
+                                <div class="mb-3">
+                                    <label for="phone_no" class="form-label">Phone Number</label>
+                                    <input type="text" class="form-control @error('phone_no') is-invalid @enderror" id="phone_no" name="phone_no" value="{{ $admin->phone_no }}" required autofocus >
+
+                                    @error("phone_no")
+                                    <div class="form-text">
+                                        <font color="red">{{ $message }}</font>
+                                    </div>
+                                    @enderror
+                                </div>
+
                                 <div class="flex items-center justify-end mt-4">
                                     <button type="submit" class="btn btn-primary">
                                         {{ __('Update') }}
