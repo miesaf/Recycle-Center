@@ -40,7 +40,7 @@
                         {{ session()->get("danger") }}
                     </div>
                     @endsession
-                    
+
                     <div class="card card-primary card-outline">
                         <div class="card-header">
                             <h3 class="card-title">Update Profile Information</h3>
@@ -68,6 +68,18 @@
                                     <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ $user->email }}" required autofocus >
 
                                     @error("email")
+                                    <div class="form-text">
+                                        <font color="red">{{ $message }}</font>
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Phone No -->
+                                <div class="mb-3">
+                                    <label for="phone_no" class="form-label">Phone No</label>
+                                    <input type="text" class="form-control @error('phone_no') is-invalid @enderror" id="phone_no" name="phone_no" value="{{ $user->phone_no }}" required autofocus >
+
+                                    @error("phone_no")
                                     <div class="form-text">
                                         <font color="red">{{ $message }}</font>
                                     </div>

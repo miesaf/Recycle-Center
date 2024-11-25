@@ -58,7 +58,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Name</th>
-                                        <th>Email</th>
+                                        <th>Email / Phone Number</th>
                                         <th>Verified</th>
                                         <th>Action</th>
                                     </tr>
@@ -69,7 +69,7 @@
                                     <tr>
                                         <td>{{ $idx + 1 }}</td>
                                         <td>{{ $owner->name }}</td>
-                                        <td>{{ $owner->email }}</td>
+                                        <td>{{ $owner->email }}<br/>{{ $owner->phone_no }}</td>
                                         <td>{{ $owner->is_verified ? "Verified" : null }}</td>
                                         <td>
                                             @if($owner->is_verified != 1)

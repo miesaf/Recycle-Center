@@ -59,7 +59,7 @@
                                         <th>#</th>
                                         <th>Name</th>
                                         <th>Services</th>
-                                        <th>Address</th>
+                                        <th>Address / Phone Number / Coordinate</th>
                                         <th>Type</th>
                                         <th>Operational Hour</th>
                                         <th>Verified</th>
@@ -71,7 +71,7 @@
                                     @foreach ($recyclingCenters as $idx => $recyclingCenter)
                                     <tr>
                                         <td>{{ $idx + 1 }}</td>
-                                        <td>{{ $recyclingCenter->name }}</td>
+                                        <td>{{ $recyclingCenter->name }}@if (auth()->user()->is_admin) <br/>by {{ $recyclingCenter->ownerInfo->name }} @endif</td>
                                         <td>
                                             <ul>
                                                 @php
@@ -85,6 +85,8 @@
                                         <td>
                                             {{ $recyclingCenter->address }}
                                             <br/><br/>
+                                            Phone Number: {{ $recyclingCenter->phone_no }}
+                                            <br/>
                                             Lat: {{ $recyclingCenter->latitude }} | Long: {{ $recyclingCenter->longitude }}
                                         </td>
                                         <td>{{ $recyclingCenter->is_dropbox ? "Dropbox" : "Premise" }}</td>

@@ -37,12 +37,14 @@ class AdminController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'phone_no' => ['required', 'string', 'max:20'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone_no' => $request->phone_no,
             'password' => Hash::make($request->password),
             'is_admin' => true,
             'is_verified' => false,
@@ -82,11 +84,13 @@ class AdminController extends Controller
         $validated = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email',
+            'phone_no' => 'required|string|max:20',
         ]);
 
         $admin = User::find($id);
         $admin->name = $request->name;
         $admin->email = $request->email;
+        $admin->phone_no = $request->phone_no;
 
         if($admin->update()) {
             Session::flash('success', 'Admin updated!');

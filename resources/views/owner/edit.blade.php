@@ -34,7 +34,7 @@
 
                                 <!-- Name -->
                                 <div class="mb-3">
-                                    <label for="name" class="form-label">Branch Name</label>
+                                    <label for="name" class="form-label">Name</label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ $owner->name }}" required autofocus >
 
                                     @error("name")
@@ -50,6 +50,18 @@
                                     <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ $owner->email }}" required autofocus >
 
                                     @error("email")
+                                    <div class="form-text">
+                                        <font color="red">{{ $message }}</font>
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <!-- Phone Number -->
+                                <div class="mb-3">
+                                    <label for="phone_no" class="form-label">Phone Number</label>
+                                    <input type="text" class="form-control @error('phone_no') is-invalid @enderror" id="phone_no" name="phone_no" value="{{ $owner->phone_no }}" required autofocus >
+
+                                    @error("phone_no")
                                     <div class="form-text">
                                         <font color="red">{{ $message }}</font>
                                     </div>
