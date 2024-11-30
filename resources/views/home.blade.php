@@ -7,6 +7,10 @@
             <div class="row"> <!--begin::Col-->
                 <div class="p-3 mb-4 mt-4 bg-body-tertiery border rounded-3">
                     <div class="container-fluid py-5">
+                        <img src="{{ asset('assets/img/georecycle-logo.jpg') }}" height="100px">
+
+                        <br/><br/>
+
                         <h1 class="display-5 fw-bold">Welcome to our Recycling Community</h1>
 
                         <p class="col-md-8 fs-4">At GeoRecycle, we are dedicated to promote a sustainable and eco friednly environment through recycling.</p>
