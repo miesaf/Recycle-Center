@@ -226,4 +226,30 @@ class RecyclingCenterController extends Controller
     {
         return response()->json(RecyclingCenter::all());
     }
+
+    public function search(Request $request)
+    {
+        if(isset($request->q)) {
+            $locations = RecyclingCenter::where('name', 'LIKE', "%$request->q%")
+                                        ->orWhere('address', 'LIKE', "%$request->q%")
+                                        ->get();
+        } else {
+            $latitude = $request->latitude; // User's current latitude
+            $longitude = $request->longitude; // User's current longitude
+            $radius = 5; // Optional radius in kilometers
+
+            $query = RecyclingCenter::selectRaw('*, (6371 * ACOS(COS(RADIANS(?)) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS(?)) + SIN(RADIANS(?)) * SIN(RADIANS(latitude)))) AS distance', [
+                $latitude, $longitude, $latitude
+            ])
+            ->orderBy('distance', 'ASC');
+
+            if ($radius) {
+                $query->having('distance', '<=', $radius);
+            }
+
+            $locations = $query->get();
+        }
+
+        return response()->json($locations);
+    }
 }

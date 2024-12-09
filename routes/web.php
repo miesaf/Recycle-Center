@@ -28,6 +28,7 @@ Route::get('/info', function () {
 })->name('info');
 
 Route::get('/api/locations', [RecyclingCenterController::class, 'getLocations']);
+Route::get('/api/search', [RecyclingCenterController::class, 'search'])->name('searchLocations');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
