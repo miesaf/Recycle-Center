@@ -2,7 +2,8 @@
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark"> <!--begin::Sidebar Brand-->
     <div class="sidebar-brand"> <!--begin::Brand Link-->
         <a href="{{ route("dashboard") }}" class="brand-link"> <!--begin::Brand Text-->
-            <span class="brand-text fw-light">{{ env("APP_NAME") }}</span> <!--end::Brand Text-->
+            <img src="{{ asset('assets/img/georecycle-logo.jpg') }}" height="40px">
+            {{-- <span class="brand-text fw-light">{{ env("APP_NAME") }}</span> <!--end::Brand Text--> --}}
         </a> <!--end::Brand Link-->
     </div> <!--end::Sidebar Brand-->
 
