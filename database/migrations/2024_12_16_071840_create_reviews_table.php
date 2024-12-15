@@ -16,7 +16,7 @@ return new class extends Migration
             $table->bigInteger("recycling_center");
             $table->bigInteger("user");
             $table->integer("rating");
-            $table->text("review");
+            $table->text("review")->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

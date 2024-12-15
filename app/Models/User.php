@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(RecyclingCenter::class, 'owner');
     }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'owner');
+    }
 }
