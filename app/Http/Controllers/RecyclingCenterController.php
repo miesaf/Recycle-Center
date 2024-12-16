@@ -92,7 +92,13 @@ class RecyclingCenterController extends Controller
 
         $recyclingCenter->address = $request->address;
         $recyclingCenter->is_dropbox = $request->is_dropbox;
-        $recyclingCenter->operation_hour = $request->operation_hour;
+
+        if($request->is_dropbox) {
+            $recyclingCenter->operation_hour = "-";
+        } else {
+            $recyclingCenter->operation_hour = $request->operation_hour;
+        }
+
         $recyclingCenter->latitude = $request->latitude;
         $recyclingCenter->longitude = $request->longitude;
 
@@ -183,7 +189,13 @@ class RecyclingCenterController extends Controller
 
         $recyclingCenter->address = $request->address;
         $recyclingCenter->is_dropbox = $request->is_dropbox;
-        $recyclingCenter->operation_hour = $request->operation_hour;
+
+        if($request->is_dropbox) {
+            $recyclingCenter->operation_hour = "-";
+        } else {
+            $recyclingCenter->operation_hour = $request->operation_hour;
+        }
+        
         $recyclingCenter->latitude = $request->latitude;
         $recyclingCenter->longitude = $request->longitude;
 
