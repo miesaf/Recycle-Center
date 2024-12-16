@@ -25,6 +25,7 @@ class User extends Authenticatable
         'password',
         'phone_no',
         'is_admin',
+        'is_center',
         'is_validated',
     ];
 
@@ -54,5 +55,10 @@ class User extends Authenticatable
     public function centers(): HasMany
     {
         return $this->hasMany(RecyclingCenter::class, 'owner');
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'owner');
     }
 }

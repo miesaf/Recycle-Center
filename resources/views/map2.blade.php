@@ -169,9 +169,14 @@
                         resultCard.className = "card mb-2";
                         resultCard.innerHTML = `
                             <div class="card-body">
-                                <h5 class="card-title">${location.name}</h5>
+                                <h5 class="card-title"><b>${location.name}</b></h5><br/>
                                 <p class="card-text">${location.address}</p>
-                                <p class="card-text"><small>Operation Hours: ${location.operation_hour}</small></p>
+                                <p class="card-text">
+                                    <small>
+                                        Operation Hours: ${location.operation_hour}<br/>
+                                        Contact No.: ${location.phone_no}<br/>
+                                    </small>
+                                </p>
                                 <button class="btn btn-sm btn-primary" onclick="focusMarker('${location.name}');">
                                     View on Map
                                 </button>
@@ -255,9 +260,14 @@
                         resultCard.className = "card mb-2";
                         resultCard.innerHTML = `
                             <div class="card-body">
-                                <h5 class="card-title">${location.name}</h5>
+                                <h5 class="card-title"><b>${location.name}</b></h5><br/>
                                 <p class="card-text">${location.address}</p>
-                                <p class="card-text"><small>Operation Hours: ${location.operation_hour}</small></p>
+                                <p class="card-text">
+                                    <small>
+                                        Operation Hours: ${location.operation_hour}<br/>
+                                        Contact No.: ${location.phone_no}<br/>
+                                    </small>
+                                </p>
                                 <button class="btn btn-sm btn-primary" onclick="focusMarker('${location.name}');">
                                     View on Map
                                 </button>

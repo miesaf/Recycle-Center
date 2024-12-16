@@ -17,7 +17,7 @@
 
 <body class="login-page bg-body-secondary">
     <div class="login-box">
-        <div class="login-logo"> <a href="../index2.html"><b>{{ env("APP_NAME") }}</b></a> </div> <!-- /.login-logo -->
+        <div class="login-logo"> <a href="{{ route('welcome') }}"><b>{{ env("APP_NAME") }}</b></a> </div> <!-- /.login-logo -->
         <div class="card">
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
@@ -43,9 +43,17 @@
                 {{-- <p class="mb-1"> <a href="{{ route('password.request') }}">I forgot my password</a> </p> --}}
                 @endif
 
-                <p class="mb-0"> <a href="{{ route("register") }}" class="text-center">
+                <p class="mb-0">
+                    <a href="{{ route("register") }}" class="text-center">
                         Register a recycle center account
-                    </a> </p>
+                    </a>
+                </p>
+
+                <p class="mb-0">
+                    <a href="{{ route("contributor.register") }}" class="text-center">
+                        Register a contributor account
+                    </a>
+                </p>
             </div> <!-- /.login-card-body -->
         </div>
     </div> <!-- /.login-box --> <!--begin::Third Party Plugin(OverlayScrollbars)-->

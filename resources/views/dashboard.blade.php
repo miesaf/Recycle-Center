@@ -53,7 +53,7 @@
                     </div> <!--end::Small Box Widget 3-->
                 </div> <!--end::Col-->
             </div> <!--end::Row--> <!--begin::Row-->
-            @if(!auth()->user()->is_admin)
+            @if(auth()->user()->is_center)
             <div class="row">
                 <div class="col">
                     <div class="card card-primary card-outline">
@@ -79,7 +79,7 @@
                                     @foreach ($recyclingCenters as $idx => $recyclingCenter)
                                     <tr>
                                         <td>{{ $idx + 1 }}</td>
-                                        <td>{{ $recyclingCenter->name }}</td>
+                                        <td>{{ $recyclingCenter->name }}<br/>{{ $recyclingCenter->reviews_avg_rating }} ⭐</td>
                                         <td>
                                             <ul>
                                                 @php

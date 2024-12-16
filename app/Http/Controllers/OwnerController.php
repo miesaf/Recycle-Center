@@ -13,7 +13,7 @@ class OwnerController extends Controller
      */
     public function index()
     {
-        $owners = User::where("is_admin", "<>", 1)->get();
+        $owners = User::where("is_center", "=", 1)->get();
 
         return view("owner.index")->with('owners', $owners);
     }

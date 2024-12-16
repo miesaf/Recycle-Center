@@ -20,11 +20,23 @@ class DashboardController extends Controller
         $totAdmins = User::where('is_admin', '=', true)->count();
         $totOwners = User::where('is_admin', '=', false)->count();
 
-        if(Auth::user()->is_admin) {
-            $recyclingCenters = RecyclingCenter::all();
+        if (Auth::user()->is_center) {
+            // Fetch only centers owned by the current user with their average rating.
+            $recyclingCenters = RecyclingCenter::where("owner", "=", Auth::user()->id)
+                ->withAvg('reviews', 'rating') // Include average rating.
+                ->get();
         } else {
-            $recyclingCenters = RecyclingCenter::where("owner", "=", Auth::user()->id)->get();
+            // Fetch all centers with their average rating.
+            $recyclingCenters = RecyclingCenter::withAvg('reviews', 'rating')->get();
         }
+
+        // Format the average rating to 1 decimal place.
+        $recyclingCenters->transform(function ($center) {
+            $center->reviews_avg_rating = $center->reviews_avg_rating
+                ? number_format($center->reviews_avg_rating, 1)
+                : 0;
+            return $center;
+        });
 
         return view('dashboard', [
             'user' => $request->user(),
