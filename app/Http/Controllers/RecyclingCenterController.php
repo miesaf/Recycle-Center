@@ -195,7 +195,7 @@ class RecyclingCenterController extends Controller
         } else {
             $recyclingCenter->operation_hour = $request->operation_hour;
         }
-        
+
         $recyclingCenter->latitude = $request->latitude;
         $recyclingCenter->longitude = $request->longitude;
 
@@ -249,26 +249,46 @@ class RecyclingCenterController extends Controller
 
     public function search(Request $request)
     {
-        if(isset($request->q)) {
-            $locations = RecyclingCenter::where('name', 'LIKE', "%$request->q%")
-                                        ->orWhere('address', 'LIKE', "%$request->q%")
-                                        ->get();
+        $query = RecyclingCenter::query();
+
+        if ($request->has('q')) {
+            // 1. If `q` is defined, search by name or address and sort by rating.
+            $query->where('name', 'LIKE', "%{$request->q}%")
+                ->orWhere('address', 'LIKE', "%{$request->q}%");
+            $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
+        } elseif ($request->has('r')) {
+            // 2. If `r` is defined, return the top 10 centers by rating.
+            $query->withAvg('reviews', 'rating')
+                ->orderBy('reviews_avg_rating', 'DESC')
+                ->limit(10);
         } else {
-            $latitude = $request->latitude; // User's current latitude
-            $longitude = $request->longitude; // User's current longitude
-            $radius = 5; // Optional radius in kilometers
+            // 3. If no parameters are defined, display centers based on location and sort by rating.
+            if ($request->latitude && $request->longitude) {
+                $latitude = $request->latitude; // User's latitude
+                $longitude = $request->longitude; // User's longitude
+                $radius = $request->radius ?? 5; // Optional radius (default 5 km)
 
-            $query = RecyclingCenter::selectRaw('*, (6371 * ACOS(COS(RADIANS(?)) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS(?)) + SIN(RADIANS(?)) * SIN(RADIANS(latitude)))) AS distance', [
-                $latitude, $longitude, $latitude
-            ])
-            ->orderBy('distance', 'ASC');
-
-            if ($radius) {
-                $query->having('distance', '<=', $radius);
+                $query->selectRaw('*, (6371 * ACOS(COS(RADIANS(?)) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS(?)) + SIN(RADIANS(?)) * SIN(RADIANS(latitude)))) AS distance', [
+                    $latitude, $longitude, $latitude
+                ])
+                ->having('distance', '<=', $radius)
+                ->orderBy('distance', 'ASC');
             }
 
-            $locations = $query->get();
+            // Always sort by rating.
+            $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
         }
+
+        // Ensure all results are limited to a maximum of 15.
+        $locations = $query->limit(15)->get();
+
+        // Format the average rating to 1 decimal place.
+        $locations->transform(function ($location) {
+            $location->reviews_avg_rating = $location->reviews_avg_rating
+                ? number_format($location->reviews_avg_rating, 1)
+                : null;
+            return $location;
+        });
 
         return response()->json($locations);
     }

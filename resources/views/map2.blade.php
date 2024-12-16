@@ -6,6 +6,16 @@
         height: 90vh;
         width: 100%;
     }
+    .star-rating {
+        display: inline-flex;
+        align-items: center;
+    }
+    .star-rating i {
+        margin-right: 2px;
+    }
+    .text-warning {
+        color: #ffc107; /* Bootstrap's warning yellow */
+    }
 </style>
 @endsection
 
@@ -151,6 +161,10 @@
 
                         const infoWindowContent = `
                             <h5>${location.name}</h5>
+                            <p>
+                                ${starRating(location.reviews_avg_rating)}
+                                <small>(${location.reviews_avg_rating ?? 'No Rating'})</small>
+                            </p>
                             <p>${location.address}<br/>
                             Operation Hour: ${location.operation_hour}</p>
                         `;
@@ -169,7 +183,8 @@
                         resultCard.className = "card mb-2";
                         resultCard.innerHTML = `
                             <div class="card-body">
-                                <h5 class="card-title"><b>${location.name}</b></h5><br/>
+                                <h5 class="card-title"><b>${location.name}</b></h5>
+                                <p class="card-text">${starRating(location.reviews_avg_rating)}</p>
                                 <p class="card-text">${location.address}</p>
                                 <p class="card-text">
                                     <small>
@@ -191,6 +206,22 @@
                     }
                 })
                 .catch(error => console.error("Error fetching locations:", error));
+        }
+
+        // Generate star ratings dynamically
+        function starRating(rating) {
+            if (!rating) return "No Rating";
+            let stars = "";
+            for (let i = 1; i <= 5; i++) {
+                if (i <= Math.floor(rating)) {
+                    stars += '<i class="bi bi-star-fill text-warning"></i>'; // Full star
+                } else if (i - rating < 1) {
+                    stars += '<i class="bi bi-star-half text-warning"></i>'; // Half star
+                } else {
+                    stars += '<i class="bi bi-star text-warning"></i>'; // Empty star
+                }
+            }
+            return stars;
         }
 
         // Focus on a specific marker and open its info window
@@ -242,6 +273,10 @@
 
                         const infoWindowContent = `
                             <h5>${location.name}</h5>
+                            <p>
+                                ${starRating(location.reviews_avg_rating)}
+                                <small>(${location.reviews_avg_rating ?? 'No Rating'})</small>
+                            </p>
                             <p>${location.address}<br/>
                             Operation Hour: ${location.operation_hour}</p>
                         `;
@@ -260,7 +295,8 @@
                         resultCard.className = "card mb-2";
                         resultCard.innerHTML = `
                             <div class="card-body">
-                                <h5 class="card-title"><b>${location.name}</b></h5><br/>
+                                <h5 class="card-title"><b>${location.name}</b></h5>
+                                <p class="card-text">${starRating(location.reviews_avg_rating)}</p>
                                 <p class="card-text">${location.address}</p>
                                 <p class="card-text">
                                     <small>
