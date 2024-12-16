@@ -6,6 +6,7 @@
         height: 90vh;
         width: 100%;
     }
+
     .star-rating {
         display: inline-flex;
         align-items: center;
@@ -13,8 +14,15 @@
     .star-rating i {
         margin-right: 2px;
     }
+
     .text-warning {
         color: #ffc107; /* Bootstrap's warning yellow */
+    }
+
+    .btn-xs {
+        padding: 0.25rem 0.5rem; /* Adjust padding */
+        font-size: 0.75rem; /* Smaller font size */
+        line-height: 1; /* Adjust line height */
     }
 </style>
 @endsection
@@ -167,6 +175,9 @@
                             </p>
                             <p>${location.address}<br/>
                             Operation Hour: ${location.operation_hour}</p>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
+                               target="_blank"
+                               class="btn btn-xs btn-success"><i class="bi bi-compass"></i> Navigate</a>
                         `;
 
                         const infoWindow = new google.maps.InfoWindow({ content: infoWindowContent });
@@ -183,18 +194,24 @@
                         resultCard.className = "card mb-2";
                         resultCard.innerHTML = `
                             <div class="card-body">
-                                <h5 class="card-title"><b>${location.name}</b></h5>
-                                <p class="card-text">${starRating(location.reviews_avg_rating)}</p>
-                                <p class="card-text">${location.address}</p>
+                                <h5 class="card-title"><b>${location.name}</b></h5><br/>
+                                <p class="card-text">
+                                    ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'})</small><br/>
+                                    ${location.address}
+                                </p>
                                 <p class="card-text">
                                     <small>
                                         Operation Hours: ${location.operation_hour}<br/>
                                         Contact No.: ${location.phone_no}<br/>
                                     </small>
                                 </p>
-                                <button class="btn btn-sm btn-primary" onclick="focusMarker('${location.name}');">
-                                    View on Map
+                                <button class="btn btn-xs btn-primary" onclick="focusMarker('${location.name}');">
+                                    <i class="bi bi-geo-alt"></i> View on Map
                                 </button>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
+                                   target="_blank" class="btn btn-xs btn-success">
+                                    <i class="bi bi-compass"></i> Navigate
+                                </a>
                             </div>
                         `;
                         resultsContainer.appendChild(resultCard);
@@ -279,6 +296,9 @@
                             </p>
                             <p>${location.address}<br/>
                             Operation Hour: ${location.operation_hour}</p>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
+                               target="_blank"
+                               class="btn btn-xs btn-success"><i class="bi bi-compass"></i> Navigate</a>
                         `;
 
                         const infoWindow = new google.maps.InfoWindow({ content: infoWindowContent });
@@ -295,18 +315,25 @@
                         resultCard.className = "card mb-2";
                         resultCard.innerHTML = `
                             <div class="card-body">
-                                <h5 class="card-title"><b>${location.name}</b></h5>
-                                <p class="card-text">${starRating(location.reviews_avg_rating)}</p>
-                                <p class="card-text">${location.address}</p>
+                                <h5 class="card-title"><b>${location.name}</b></h5><br/>
+                                <p class="card-text">
+                                    ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'})</small><br/>
+                                    ${location.address}
+                                </p>
                                 <p class="card-text">
                                     <small>
                                         Operation Hours: ${location.operation_hour}<br/>
                                         Contact No.: ${location.phone_no}<br/>
                                     </small>
                                 </p>
-                                <button class="btn btn-sm btn-primary" onclick="focusMarker('${location.name}');">
-                                    View on Map
+                                <button class="btn btn-xs btn-primary" onclick="focusMarker('${location.name}');">
+                                    <i class="bi bi-geo-alt"></i> View on Map
                                 </button>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
+                                   target="_blank"
+                                   class="btn btn-xs btn-success">
+                                    <i class="bi bi-compass"></i> Navigate
+                                </a>
                             </div>
                         `;
                         resultsContainer.appendChild(resultCard);

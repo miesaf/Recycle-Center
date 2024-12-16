@@ -280,7 +280,7 @@ class RecyclingCenterController extends Controller
         }
 
         // Ensure all results are limited to a maximum of 15.
-        $locations = $query->limit(15)->get();
+        $locations = $query->limit(10)->get();
 
         // Format the average rating to 1 decimal place.
         $locations->transform(function ($location) {
