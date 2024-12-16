@@ -16,10 +16,18 @@ class RecyclingCenterController extends Controller
     public function index()
     {
         if(Auth::user()->is_admin) {
-            $recyclingCenters = RecyclingCenter::with('ownerInfo')->get();
+            $recyclingCenters = RecyclingCenter::with('ownerInfo')->withAvg('reviews', 'rating')->get();
         } else {
-            $recyclingCenters = RecyclingCenter::where("owner", "=", Auth::user()->id)->get();
+            $recyclingCenters = RecyclingCenter::where("owner", "=", Auth::user()->id)->withAvg('reviews', 'rating')->get();
         }
+
+        // Format the average rating to 1 decimal place.
+        $recyclingCenters->transform(function ($center) {
+            $center->reviews_avg_rating = $center->reviews_avg_rating
+                ? number_format($center->reviews_avg_rating, 1)
+                : 0;
+            return $center;
+        });
 
         return view("center.index")->with('recyclingCenters', $recyclingCenters);
     }

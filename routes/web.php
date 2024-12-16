@@ -5,6 +5,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RecyclingCenterController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OwnerController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -27,6 +29,14 @@ Route::get('/info', function () {
     return view('info');
 })->name('info');
 
+Route::prefix('contributor')->group(function () {
+    Route::get('register', function () {
+        return view('auth.registerUser');
+    })->name('contributor.register');
+
+    Route::post('register', [RegisteredUserController::class, 'storeContributor']);
+});
+
 Route::get('/api/locations', [RecyclingCenterController::class, 'getLocations']);
 Route::get('/api/search', [RecyclingCenterController::class, 'search'])->name('searchLocations');
 
@@ -40,6 +50,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('center', RecyclingCenterController::class);
     Route::resource('admin', AdminController::class);
     Route::resource('owner', OwnerController::class);
+    Route::resource('review', ReviewController::class);
 
     Route::put('/center/{id}/verify', [RecyclingCenterController::class, 'verify'])->name('center.verify');
     Route::put('/owner/{id}/verify', [OwnerController::class, 'verify'])->name('owner.verify');

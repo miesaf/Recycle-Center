@@ -18,6 +18,6 @@ class RecyclingCenter extends Model
 
     public function reviews(): HasMany
     {
-        return $this->hasMany(Review::class, 'recycle_center');
+        return $this->hasMany(Review::class, 'recycling_center');
     }
 }

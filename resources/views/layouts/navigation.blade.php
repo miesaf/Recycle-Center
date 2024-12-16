@@ -40,10 +40,16 @@
                         <p>Admin</p>
                     </a>
                 </li>
-                @else
+                @elseif(auth()->user()->is_center)
                 <li class="nav-item">
                     <a href="{{ route("center.create") }}" class="nav-link {{ request()->routeIs('center.*') ? 'active' : ''}}"> <i class="nav-icon bi bi-recycle"></i>
                         <p>Add Recycle Center</p>
+                    </a>
+                </li>
+                @else
+                <li class="nav-item">
+                    <a href="{{ route("review.index") }}" class="nav-link {{ request()->routeIs('review.*') ? 'active' : ''}}"> <i class="nav-icon bi bi-pencil"></i>
+                        <p>Reviews</p>
                     </a>
                 </li>
                 @endif

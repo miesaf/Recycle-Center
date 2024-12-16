@@ -20,8 +20,8 @@
         <div class="register-logo"> <a href="{{ route('welcome') }}"><b>{{ env("APP_NAME") }}</b></a> </div> <!-- /.register-logo -->
         <div class="card">
             <div class="card-body register-card-body">
-                <p class="register-box-msg">Register a recycle center account</p>
-                <form action="{{ route('register') }}" method="post">
+                <p class="register-box-msg">Register a contributor account</p>
+                <form action="{{ route('contributor.register') }}" method="post">
                     @csrf
 
                     <div class="input-group mb-3"> <input type="text" class="form-control" name="name"  placeholder="Name">
@@ -35,9 +35,6 @@
                     </div>
                     <div class="input-group mb-3"> <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm Password">
                         <div class="input-group-text"> <span class="bi bi-lock-fill"></span> </div>
-                    </div>
-                    <div class="input-group mb-3"> <input type="text" class="form-control" name="phone_no"  placeholder="Phone Number">
-                        <div class="input-group-text"> <span class="bi bi-telephone"></span> </div>
                     </div> <!--begin::Row-->
                     <div class="row">
                         <div class="col-4">
@@ -55,8 +52,8 @@
                 </p>
 
                 <p class="mb-0">
-                    <a href="{{ route("contributor.register") }}" class="text-center">
-                        Register a contributor account instead
+                    <a href="{{ route("register") }}" class="text-center">
+                        Register a recycle center account instead
                     </a>
                 </p>
             </div> <!-- /.register-card-body -->

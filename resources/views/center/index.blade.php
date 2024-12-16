@@ -71,7 +71,7 @@
                                     @foreach ($recyclingCenters as $idx => $recyclingCenter)
                                     <tr>
                                         <td>{{ $idx + 1 }}</td>
-                                        <td>{{ $recyclingCenter->name }}@if (auth()->user()->is_admin) <br/>by {{ $recyclingCenter->ownerInfo->name }} @endif</td>
+                                        <td><b>{{ $recyclingCenter->name }}</b>@if (auth()->user()->is_admin) <br/>by {{ $recyclingCenter->ownerInfo->name }} @endif<br/>{{ $recyclingCenter->reviews_avg_rating }} ⭐</td>
                                         <td>
                                             <ul>
                                                 @php
