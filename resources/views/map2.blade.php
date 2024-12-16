@@ -130,6 +130,22 @@
             }
         };
 
+        // Generate the services list dynamically
+        function generateServicesList(servicesJson) {
+            try {
+                const services = JSON.parse(servicesJson)?.services; // Parse the JSON string and extract services array
+                if (!Array.isArray(services) || services.length === 0) {
+                    return '<li>No services listed</li>'; // Fallback if the array is empty
+                }
+
+                // Generate list items for each service
+                return services.map(service => `<li>${service}</li>`).join('');
+            } catch (error) {
+                console.error('Error parsing services JSON:', error);
+                return '<li>Invalid services data</li>'; // Fallback if parsing fails
+            }
+        }
+
         // Fetch nearby locations
         function fetchNearbyLocations(latitude, longitude) {
             const url = new URL('/api/search', window.location.origin);
@@ -203,13 +219,18 @@
                                     <small>
                                         Operation Hours: ${location.operation_hour}<br/>
                                         Contact No.: ${location.phone_no}<br/>
+                                        Accepted Materials:
+                                        <ul>
+                                            ${generateServicesList(location.services)}
+                                        </ul>
                                     </small>
                                 </p>
                                 <button class="btn btn-xs btn-primary" onclick="focusMarker('${location.name}');">
                                     <i class="bi bi-geo-alt"></i> View on Map
                                 </button>
                                 <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
-                                   target="_blank" class="btn btn-xs btn-success">
+                                   target="_blank"
+                                   class="btn btn-xs btn-success">
                                     <i class="bi bi-compass"></i> Navigate
                                 </a>
                             </div>
@@ -223,32 +244,6 @@
                     }
                 })
                 .catch(error => console.error("Error fetching locations:", error));
-        }
-
-        // Generate star ratings dynamically
-        function starRating(rating) {
-            if (!rating) return "No Rating";
-            let stars = "";
-            for (let i = 1; i <= 5; i++) {
-                if (i <= Math.floor(rating)) {
-                    stars += '<i class="bi bi-star-fill text-warning"></i>'; // Full star
-                } else if (i - rating < 1) {
-                    stars += '<i class="bi bi-star-half text-warning"></i>'; // Half star
-                } else {
-                    stars += '<i class="bi bi-star text-warning"></i>'; // Empty star
-                }
-            }
-            return stars;
-        }
-
-        // Focus on a specific marker and open its info window
-        function focusMarker(name) {
-            const { marker, infoWindow } = infoWindows[name];
-            if (activeInfoWindow) activeInfoWindow.close(); // Close the currently open info window
-            map.setCenter(marker.getPosition());
-            map.setZoom(17);
-            infoWindow.open(map, marker);
-            activeInfoWindow = infoWindow; // Update the active info window
         }
 
         // Search functionality
@@ -324,6 +319,10 @@
                                     <small>
                                         Operation Hours: ${location.operation_hour}<br/>
                                         Contact No.: ${location.phone_no}<br/>
+                                        Accepted Materials:
+                                        <ul>
+                                            ${generateServicesList(location.services)}
+                                        </ul>
                                     </small>
                                 </p>
                                 <button class="btn btn-xs btn-primary" onclick="focusMarker('${location.name}');">
@@ -345,6 +344,32 @@
                     }
                 })
                 .catch(error => console.error("Error fetching search results:", error));
+        }
+
+        // Generate star ratings dynamically
+        function starRating(rating) {
+            if (!rating) return "No Rating";
+            let stars = "";
+            for (let i = 1; i <= 5; i++) {
+                if (i <= Math.floor(rating)) {
+                    stars += '<i class="bi bi-star-fill text-warning"></i>'; // Full star
+                } else if (i - rating < 1) {
+                    stars += '<i class="bi bi-star-half text-warning"></i>'; // Half star
+                } else {
+                    stars += '<i class="bi bi-star text-warning"></i>'; // Empty star
+                }
+            }
+            return stars;
+        }
+
+        // Focus on a specific marker and open its info window
+        function focusMarker(name) {
+            const { marker, infoWindow } = infoWindows[name];
+            if (activeInfoWindow) activeInfoWindow.close(); // Close the currently open info window
+            map.setCenter(marker.getPosition());
+            map.setZoom(17);
+            infoWindow.open(map, marker);
+            activeInfoWindow = infoWindow; // Update the active info window
         }
     </script>
 
