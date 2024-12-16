@@ -318,7 +318,7 @@
                                 <p class="card-text">
                                     <small>
                                         Operation Hours: ${location.operation_hour}<br/>
-                                        Contact No.: ${location.phone_no}<br/>
+                                        Contact No.: <a href="tel:${location.phone_no}">${location.phone_no}</a><br/>
                                         Accepted Materials:
                                         <ul>
                                             ${generateServicesList(location.services)}
