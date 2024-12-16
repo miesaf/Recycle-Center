@@ -30,6 +30,7 @@ class RecyclingCenterController extends Controller
         });
 
         return view("center.index")->with('recyclingCenters', $recyclingCenters);
+        
     }
 
     /**
