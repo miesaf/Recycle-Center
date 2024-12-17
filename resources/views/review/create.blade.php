@@ -72,7 +72,7 @@
                                 </div>
 
                                 <!-- Comment -->
-                                {{-- <div class="mb-3">
+                                <div class="mb-3">
                                     <label for="review" class="form-label">Comment</label>
                                     <textarea id="review" class="form-control" rows="5" name="review" required>{{ old('review') }}</textarea>
 
@@ -81,7 +81,7 @@
                                         <font color="red">{{ $message }}</font>
                                     </div>
                                     @enderror
-                                </div> --}}
+                                </div>
 
                                 <div class="flex items-center justify-end mt-4">
                                     <button type="submit" class="btn btn-primary">

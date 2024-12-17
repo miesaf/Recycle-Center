@@ -61,7 +61,7 @@ class ReviewController extends Controller
         $validated = $request->validate([
             'recycling_center' => 'required|integer',
             'rating' => 'required|numeric|between:1,5',
-            'review' => 'optional|max:255',
+            'review' => 'nullable|max:255',
         ]);
 
         $review = new Review;
@@ -103,7 +103,7 @@ class ReviewController extends Controller
     {
         $validated = $request->validate([
             'rating' => 'required|numeric|between:1,5',
-            'review' => 'optional|max:255',
+            'review' => 'nullable|max:255',
         ]);
 
         $review = Review::find($id);
