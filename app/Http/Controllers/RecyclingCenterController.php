@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RecyclingCenter;
+use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Session;
@@ -30,7 +31,7 @@ class RecyclingCenterController extends Controller
         });
 
         return view("center.index")->with('recyclingCenters', $recyclingCenters);
-        
+
     }
 
     /**
@@ -221,6 +222,9 @@ class RecyclingCenterController extends Controller
     public function destroy($id)
     {
         if(RecyclingCenter::find($id)->delete()) {
+            // Delete all reviews for the recycling center
+            Review::where('recycling_center', '=', $id)->delete();
+
             Session::flash('success', 'Recycle center deleted!');
         } else {
             Session::flash('danger', 'Failed to delete recycle center!');

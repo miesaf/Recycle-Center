@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\RecyclingCenter;
+use App\Models\Review;
 use Session;
 
 class OwnerController extends Controller
@@ -81,10 +83,28 @@ class OwnerController extends Controller
      */
     public function destroy(string $id)
     {
-        if(User::find($id)->delete()) {
-            Session::flash('success', 'Recycle center owner deleted!');
+        $user = User::find($id);
+
+        if ($user) {
+            // Delete all recycling centers owned by the user
+            $recyclingCenters = RecyclingCenter::where('owner', '=', $id)->get();
+
+            foreach ($recyclingCenters as $center) {
+                // Delete all reviews for the recycling center
+                Review::where('recycling_center', '=', $center->id)->delete();
+            }
+
+            // Now delete the recycling centers
+            RecyclingCenter::where('owner', '=', $id)->delete();
+
+            // Finally, delete the user
+            if ($user->delete()) {
+                Session::flash('success', 'Recycle center owner and related data deleted!');
+            } else {
+                Session::flash('danger', 'Failed to delete recycle center owner!');
+            }
         } else {
-            Session::flash('danger', 'Failed to delete recycle center owner!');
+            Session::flash('danger', 'Recycle center owner not found!');
         }
 
         return redirect()->route("owner.index");
