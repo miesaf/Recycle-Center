@@ -96,38 +96,67 @@
                 mapId: "27d4cb7b44e51a1a", // Replace with your actual Map ID
             });
 
-            // Get user's current location
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const userLocation = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude,
-                        };
+           // Get user's current location
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            };
 
-                        // Center the map on the user's location
-                        map.setCenter(userLocation);
+            console.log(`Latitude: ${userLocation.lat}, Longitude: ${userLocation.lng}`);
 
-                        // Add a marker for the user's current location
-                        new google.maps.Marker({
-                            position: userLocation,
-                            map: map,
-                            title: "Your Location",
-                        });
+            // Center the map on the user's location
+            map.setCenter(userLocation);
 
-                        // Fetch nearby locations based on the user's location
-                        fetchNearbyLocations(userLocation.lat, userLocation.lng);
-                    },
-                    (error) => {
-                        console.error("Error getting location:", error);
-                        alert("Unable to retrieve your location. Falling back to default center.");
-                        fetchNearbyLocations(3.078716, 101.493990); // Fetch locations near the default center
-                    }
-                );
-            } else {
-                alert("Geolocation is not supported by your browser.");
-                fetchNearbyLocations(3.078716, 101.493990); // Fetch locations near the default center
-            }
+            // Add a marker for the user's current location
+            new google.maps.Marker({
+                position: userLocation,
+                map: map,
+                title: "Your Location",
+            });
+
+            // Fetch nearby locations based on the user's location
+            fetchNearbyLocations(userLocation.lat, userLocation.lng);
+        },
+        (error) => {
+            console.error("Error getting location:", error.message);
+            alert("Unable to retrieve your location. Falling back to default center.");
+            
+            // Fallback to a default center location
+            const defaultLocation = { lat: 3.078716, lng: 101.493990 };
+            map.setCenter(defaultLocation);
+
+            new google.maps.Marker({
+                position: defaultLocation,
+                map: map,
+                title: "Default Location",
+            });
+
+            fetchNearbyLocations(defaultLocation.lat, defaultLocation.lng);
+        },
+        {
+            enableHighAccuracy: true, // Use GPS for better accuracy
+            timeout: 10000, // Wait a maximum of 10 seconds for the location
+            maximumAge: 0, // Do not use cached location
+        }
+    );
+} else {
+    alert("Geolocation is not supported by your browser.");
+
+    // Fallback to a default center location
+    const defaultLocation = { lat: 3.078716, lng: 101.493990 };
+    map.setCenter(defaultLocation);
+
+    new google.maps.Marker({
+        position: defaultLocation,
+        map: map,
+        title: "Default Location",
+    });
+
+    fetchNearbyLocations(defaultLocation.lat, defaultLocation.lng);
+}
         };
 
         // Generate the services list dynamically
