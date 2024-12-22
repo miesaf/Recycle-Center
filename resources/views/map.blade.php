@@ -239,7 +239,7 @@ if (navigator.geolocation) {
                             <div class="card-body">
                                 <h5 class="card-title"><b>${location.name}</b></h5><br/>
                                 <p class="card-text">
-                                    ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'})</small><br/>
+                                    ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'}) <a href="{{ route('review.index') }}/${location.id}/fast" target="_blank">Review this</a></small><br/>
                                     ${location.address}
                                 </p>
                                 <p class="card-text">
@@ -339,7 +339,7 @@ if (navigator.geolocation) {
                             <div class="card-body">
                                 <h5 class="card-title"><b>${location.name}</b></h5><br/>
                                 <p class="card-text">
-                                    ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'})</small><br/>
+                                    ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'}) <a href="{{ route('review.index') }}/${location.id}/fast" target="_blank">Review this</a></small><br/>
                                     ${location.address}
                                 </p>
                                 <p class="card-text">

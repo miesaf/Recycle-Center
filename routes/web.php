@@ -60,8 +60,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('owner', OwnerController::class);
     Route::resource('review', ReviewController::class);
 
-    Route::put('/center/{id}/verify', [RecyclingCenterController::class, 'verify'])->name('center.verify');
-    Route::put('/owner/{id}/verify', [OwnerController::class, 'verify'])->name('owner.verify');
+    Route::get('review/{id}/fast', [ReviewController::class, 'fastReview'])->name('review.fast');
+    Route::post('review/{id}/fast', [ReviewController::class, 'storeFastReview'])->name('review.fastStore');
+
+    Route::put('center/{id}/verify', [RecyclingCenterController::class, 'verify'])->name('center.verify');
+    Route::put('owner/{id}/verify', [OwnerController::class, 'verify'])->name('owner.verify');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
