@@ -22,7 +22,7 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::get('/map', function () {
-    return view('map2');
+    return view('map');
 })->name('map');
 
 Route::get('/services', function () {
