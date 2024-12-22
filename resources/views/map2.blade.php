@@ -3,7 +3,7 @@
 @section('head')
 <style>
     #map {
-        height: 90vh;
+        height: 75vh;
         width: 100%;
     }
 
@@ -39,15 +39,13 @@
                             <h3 class="card-title">Map Settings</h3>
                         </div>
                         <div class="card-body">
-                            <form method="GET" action="{{ route('searchLocations') }}" onsubmit="return false;">
+                            <form method="GET" action="{{ route('searchLocations') }}" onsubmit="search(); return false;">
                                 @csrf
                                 <div class="input-group input-group-sm">
                                     <input type="text" id="query" name="q" class="form-control" placeholder="Search locations" required>
-                                    <span class="input-group-append">
-                                        <button type="button" class="btn btn-info btn-flat" onclick="search();">
-                                            <i class="bi bi-search"></i>
-                                        </button>
-                                    </span>
+                                    <button type="button" class="btn btn-info btn-flat" onclick="search();">
+                                        <i class="bi bi-search"></i>
+                                    </button>
                                 </div>
                             </form>
 
@@ -56,7 +54,7 @@
                     </div>
 
                     <!-- Results Container -->
-                    <div id="results-container" class="mt-3"></div>
+                    <div id="results-container" class="mt-3" style="height: 60vh; padding: 10px; overflow: auto;"></div>
                 </div>
 
                 <!-- Map Display Card -->
@@ -123,7 +121,7 @@ if (navigator.geolocation) {
         (error) => {
             console.error("Error getting location:", error.message);
             alert("Unable to retrieve your location. Falling back to default center.");
-            
+
             // Fallback to a default center location
             const defaultLocation = { lat: 3.078716, lng: 101.493990 };
             map.setCenter(defaultLocation);
