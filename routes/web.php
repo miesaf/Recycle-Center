@@ -29,6 +29,10 @@ Route::get('/info', function () {
     return view('info');
 })->name('info');
 
+Route::get('/privacy', function () {
+    return view('privacy');
+})->name('privacy');
+
 Route::prefix('contributor')->group(function () {
     Route::get('register', function () {
         return view('auth.registerUser');
