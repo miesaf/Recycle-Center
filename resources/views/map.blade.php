@@ -231,9 +231,8 @@
 
                         const infoWindowContent = `
                             <h5>${location.name}</h5>
-                            <p>
-                                ${starRating(location.reviews_avg_rating)}
-                                <small>(${location.reviews_avg_rating ?? 'No Rating'})</small>
+                            <p class="card-text">
+                                ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'}) <a href="{{ route('review.index') }}/${location.id}/fast" target="_blank">Review this</a></small>
                             </p>
                             <p>${location.address}<br/>
                             Operation Hour: ${location.operation_hour}</p>
@@ -343,7 +342,9 @@
 
                         const infoWindowContent = `
                             <h5>${location.name}</h5>
-                            <p>${starRating(location.reviews_avg_rating)}</p>
+                            <p class="card-text">
+                                ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'}) <a href="{{ route('review.index') }}/${location.id}/fast" target="_blank">Review this</a></small>
+                            </p>
                             <p>${location.address}<br/>Operation Hour: ${location.operation_hour}</p>
                             <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}" target="_blank" class="btn btn-xs btn-success">
                                 <i class="bi bi-compass"></i> Navigate
