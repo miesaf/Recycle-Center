@@ -96,6 +96,7 @@
         let markers = []; // Array to store all markers
         let infoWindows = {}; // Store info windows for each marker
         let activeInfoWindow = null; // Keep track of the currently active info window
+        let userMarker = null; // Draggable marker for user's location
 
         // Clear all existing markers from the map
         function clearMarkers() {
@@ -127,29 +128,20 @@
                         // Center the map on the user's location
                         map.setCenter(userLocation);
 
-                        // Add a marker for the user's current location
-                        new google.maps.Marker({
-                            position: userLocation,
-                            map: map,
-                            title: "Your Location",
-                        });
+                        // Add a draggable marker for the user's current location
+                        addDraggableMarker(userLocation);
 
-                        // Fetch nearby locations based on the user's location
+                        // Fetch nearby locations
                         fetchNearbyLocations(userLocation.lat, userLocation.lng);
                     },
                     (error) => {
                         console.error("Error getting location:", error.message);
                         alert("Unable to retrieve your location. Falling back to default center.");
 
-                        // Fallback to a default center location
+                        // Fallback to a default location
                         const defaultLocation = { lat: 3.078716, lng: 101.493990 };
                         map.setCenter(defaultLocation);
-
-                        new google.maps.Marker({
-                            position: defaultLocation,
-                            map: map,
-                            title: "Default Location",
-                        });
+                        addDraggableMarker(defaultLocation);
 
                         fetchNearbyLocations(defaultLocation.lat, defaultLocation.lng);
                     },
@@ -162,34 +154,39 @@
             } else {
                 alert("Geolocation is not supported by your browser.");
 
-                // Fallback to a default center location
+                // Fallback to a default location
                 const defaultLocation = { lat: 3.078716, lng: 101.493990 };
                 map.setCenter(defaultLocation);
-
-                new google.maps.Marker({
-                    position: defaultLocation,
-                    map: map,
-                    title: "Default Location",
-                });
+                addDraggableMarker(defaultLocation);
 
                 fetchNearbyLocations(defaultLocation.lat, defaultLocation.lng);
             }
         };
 
-        // Generate the services list dynamically
-        function generateServicesList(servicesJson) {
-            try {
-                const services = JSON.parse(servicesJson)?.services; // Parse the JSON string and extract services array
-                if (!Array.isArray(services) || services.length === 0) {
-                    return '<li>No services listed</li>'; // Fallback if the array is empty
-                }
-
-                // Generate list items for each service
-                return services.map(service => `<li>${service}</li>`).join('');
-            } catch (error) {
-                console.error('Error parsing services JSON:', error);
-                return '<li>Invalid services data</li>'; // Fallback if parsing fails
+        // Add a draggable marker to the map
+        function addDraggableMarker(location) {
+            if (userMarker) {
+                userMarker.setMap(null); // Remove existing marker
             }
+
+            userMarker = new google.maps.Marker({
+                position: location,
+                map: map,
+                title: "Drag to set your location",
+                draggable: true,
+            });
+
+            // Add a drag event listener to update the location
+            userMarker.addListener("dragend", (event) => {
+                const newPosition = {
+                    lat: event.latLng.lat(),
+                    lng: event.latLng.lng(),
+                };
+                console.log(`Updated Position: Latitude: ${newPosition.lat}, Longitude: ${newPosition.lng}`);
+
+                // Optional: Fetch locations based on the new position
+                fetchNearbyLocations(newPosition.lat, newPosition.lng);
+            });
         }
 
         // Fetch nearby locations
@@ -208,6 +205,7 @@
 
                     if (data.length === 0) {
                         resultsContainer.innerHTML = "<p>No results found.</p>";
+                        return;
                     }
 
                     data.forEach(location => {
@@ -335,6 +333,12 @@
                             },
                             map: map,
                             title: location.name,
+                            label: {
+                                text: location.name,
+                                color: "black",
+                                fontSize: "12px",
+                                fontWeight: "bold",
+                            },
                         });
 
                         markers.push(marker); // Add marker to markers array
@@ -383,8 +387,8 @@
                                     <i class="bi bi-geo-alt"></i> View on Map
                                 </button>
                                 <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
-                                target="_blank"
-                                class="btn btn-xs btn-success">
+                                   target="_blank"
+                                   class="btn btn-xs btn-success">
                                     <i class="bi bi-compass"></i> Navigate
                                 </a>
                             </div>
@@ -393,10 +397,25 @@
                     });
 
                     if (data.length > 0) {
-                        map.fitBounds(bounds); // Adjust map bounds to fit markers
+                        map.fitBounds(bounds);
                     }
                 })
-                .catch(error => console.error("Error fetching search results:", error));
+                .catch(error => console.error("Error fetching locations:", error));
+        }
+
+        // Generate the services list dynamically
+        function generateServicesList(servicesJson) {
+            try {
+                const services = JSON.parse(servicesJson)?.services;
+                if (!Array.isArray(services) || services.length === 0) {
+                    return '<li>No services listed</li>';
+                }
+
+                return services.map(service => `<li>${service}</li>`).join('');
+            } catch (error) {
+                console.error('Error parsing services JSON:', error);
+                return '<li>Invalid services data</li>';
+            }
         }
 
         // Generate star ratings dynamically
