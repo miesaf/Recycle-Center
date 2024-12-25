@@ -256,22 +256,46 @@ class RecyclingCenterController extends Controller
     {
         $query = RecyclingCenter::query();
 
-        if ($request->has('q')) {
-            // 1. If `q` is defined, search by name or address and sort by rating.
+        if ($request->has('q') && $request->has('f')) {
+            // 1. If both `q` and `f` exist, search by name/address and filter by services.
+            $filters = $request->f; // Array of materials to filter by
+
+            $query->where(function ($subQuery) use ($request) {
+                $subQuery->where('name', 'LIKE', "%{$request->q}%")
+                        ->orWhere('address', 'LIKE', "%{$request->q}%");
+            });
+
+            // Add where clauses to check if all values exist in the `services` JSON field
+            foreach ($filters as $filter) {
+                $query->whereRaw("JSON_CONTAINS(services, '\"$filter\"', '$.services')");
+            }
+
+            $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
+        } elseif ($request->has('q')) {
+            // 2. If `q` is defined, search by name or address and sort by rating.
             $query->where('name', 'LIKE', "%{$request->q}%")
                 ->orWhere('address', 'LIKE', "%{$request->q}%");
             $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
         } elseif ($request->has('r')) {
-            // 2. If `r` is defined, return the top 10 centers by rating.
+            // 3. If `r` is defined, return the top 10 centers by rating.
             $query->withAvg('reviews', 'rating')
                 ->orderBy('reviews_avg_rating', 'DESC')
                 ->limit(10);
+        } elseif ($request->has('f')) {
+            // 4. If 'f' is defined, filter by material and sort by rating.
+            $filters = $request->f;
+
+            foreach ($filters as $filter) {
+                $query->whereRaw("JSON_CONTAINS(services, '\"$filter\"', '$.services')");
+            }
+
+            $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
         } else {
-            // 3. If no parameters are defined, display centers based on location and sort by rating.
+            // 5. If no parameters are defined, display centers based on location and sort by rating.
             if ($request->latitude && $request->longitude) {
                 $latitude = $request->latitude; // User's latitude
                 $longitude = $request->longitude; // User's longitude
-                $radius = $request->radius ?? 3; // Optional radius (default 5 km)
+                $radius = $request->radius ?? 3; // Optional radius (default 3 km)
 
                 $query->selectRaw('*, (6371 * ACOS(COS(RADIANS(?)) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS(?)) + SIN(RADIANS(?)) * SIN(RADIANS(latitude)))) AS distance', [
                     $latitude, $longitude, $latitude
@@ -280,7 +304,6 @@ class RecyclingCenterController extends Controller
                 ->orderBy('distance', 'ASC');
             }
 
-            // Always sort by rating.
             $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
         }
 
