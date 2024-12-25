@@ -47,9 +47,28 @@
                                         <i class="bi bi-search"></i>
                                     </button>
                                 </div>
+
+                                <div class="form-group mt-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Paper">
+                                        <label class="form-check-label">Paper</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Metal">
+                                        <label class="form-check-label">Metal</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Fabric">
+                                        <label class="form-check-label">Fabric</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Glass">
+                                        <label class="form-check-label">Glass</label>
+                                    </div>
+                                </div>
                             </form>
 
-                            <a class="btn btn-success btn-sm w-100 mt-3" href="{{ route('map') }}">Search within my area <i class="bi bi-pin"></i></a>
+                            <a class="btn btn-success btn-sm w-100 mt-2" href="{{ route('map') }}">Search within my area <i class="bi bi-pin"></i></a>
                         </div>
                     </div>
 
@@ -95,66 +114,66 @@
             });
 
            // Get user's current location
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-            const userLocation = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-            };
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                        };
 
-            console.log(`Latitude: ${userLocation.lat}, Longitude: ${userLocation.lng}`);
+                        console.log(`Latitude: ${userLocation.lat}, Longitude: ${userLocation.lng}`);
 
-            // Center the map on the user's location
-            map.setCenter(userLocation);
+                        // Center the map on the user's location
+                        map.setCenter(userLocation);
 
-            // Add a marker for the user's current location
-            new google.maps.Marker({
-                position: userLocation,
-                map: map,
-                title: "Your Location",
-            });
+                        // Add a marker for the user's current location
+                        new google.maps.Marker({
+                            position: userLocation,
+                            map: map,
+                            title: "Your Location",
+                        });
 
-            // Fetch nearby locations based on the user's location
-            fetchNearbyLocations(userLocation.lat, userLocation.lng);
-        },
-        (error) => {
-            console.error("Error getting location:", error.message);
-            alert("Unable to retrieve your location. Falling back to default center.");
+                        // Fetch nearby locations based on the user's location
+                        fetchNearbyLocations(userLocation.lat, userLocation.lng);
+                    },
+                    (error) => {
+                        console.error("Error getting location:", error.message);
+                        alert("Unable to retrieve your location. Falling back to default center.");
 
-            // Fallback to a default center location
-            const defaultLocation = { lat: 3.078716, lng: 101.493990 };
-            map.setCenter(defaultLocation);
+                        // Fallback to a default center location
+                        const defaultLocation = { lat: 3.078716, lng: 101.493990 };
+                        map.setCenter(defaultLocation);
 
-            new google.maps.Marker({
-                position: defaultLocation,
-                map: map,
-                title: "Default Location",
-            });
+                        new google.maps.Marker({
+                            position: defaultLocation,
+                            map: map,
+                            title: "Default Location",
+                        });
 
-            fetchNearbyLocations(defaultLocation.lat, defaultLocation.lng);
-        },
-        {
-            enableHighAccuracy: true, // Use GPS for better accuracy
-            timeout: 10000, // Wait a maximum of 10 seconds for the location
-            maximumAge: 0, // Do not use cached location
-        }
-    );
-} else {
-    alert("Geolocation is not supported by your browser.");
+                        fetchNearbyLocations(defaultLocation.lat, defaultLocation.lng);
+                    },
+                    {
+                        enableHighAccuracy: true, // Use GPS for better accuracy
+                        timeout: 10000, // Wait a maximum of 10 seconds for the location
+                        maximumAge: 0, // Do not use cached location
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by your browser.");
 
-    // Fallback to a default center location
-    const defaultLocation = { lat: 3.078716, lng: 101.493990 };
-    map.setCenter(defaultLocation);
+                // Fallback to a default center location
+                const defaultLocation = { lat: 3.078716, lng: 101.493990 };
+                map.setCenter(defaultLocation);
 
-    new google.maps.Marker({
-        position: defaultLocation,
-        map: map,
-        title: "Default Location",
-    });
+                new google.maps.Marker({
+                    position: defaultLocation,
+                    map: map,
+                    title: "Default Location",
+                });
 
-    fetchNearbyLocations(defaultLocation.lat, defaultLocation.lng);
-}
+                fetchNearbyLocations(defaultLocation.lat, defaultLocation.lng);
+            }
         };
 
         // Generate the services list dynamically
@@ -275,10 +294,27 @@ if (navigator.geolocation) {
 
         // Search functionality
         function search() {
-            let query = document.getElementById('query').value;
-            const url = new URL('/api/search', window.location.origin);
-            url.searchParams.append('q', query); // Add query parameter
+            let query = document.getElementById('query').value.trim(); // Get the search query
+            let filters = []; // Collect filters from checkboxes
 
+            // Collect selected filters from checkboxes
+            document.querySelectorAll('input[name="f[]"]:checked').forEach(checkbox => {
+                filters.push(checkbox.value);
+            });
+
+            // Build the URL
+            const url = new URL('/api/search', window.location.origin);
+            if (query !== "") {
+                url.searchParams.append('q', query); // Add `q` only if it's not empty
+            }
+            if (filters.length > 0) {
+                // Add each filter as a separate `f` parameter
+                filters.forEach(filter => {
+                    url.searchParams.append('f[]', filter);
+                });
+            }
+
+            // Fetch data from the server
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -289,6 +325,7 @@ if (navigator.geolocation) {
 
                     if (data.length === 0) {
                         resultsContainer.innerHTML = "<p>No results found.</p>";
+                        return;
                     }
 
                     data.forEach(location => {
@@ -299,12 +336,6 @@ if (navigator.geolocation) {
                             },
                             map: map,
                             title: location.name,
-                            label: {
-                                text: location.name,
-                                color: "black",
-                                fontSize: "12px",
-                                fontWeight: "bold",
-                            },
                         });
 
                         markers.push(marker); // Add marker to markers array
@@ -312,15 +343,11 @@ if (navigator.geolocation) {
 
                         const infoWindowContent = `
                             <h5>${location.name}</h5>
-                            <p>
-                                ${starRating(location.reviews_avg_rating)}
-                                <small>(${location.reviews_avg_rating ?? 'No Rating'})</small>
-                            </p>
-                            <p>${location.address}<br/>
-                            Operation Hour: ${location.operation_hour}</p>
-                            <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
-                               target="_blank"
-                               class="btn btn-xs btn-success"><i class="bi bi-compass"></i> Navigate</a>
+                            <p>${starRating(location.reviews_avg_rating)}</p>
+                            <p>${location.address}<br/>Operation Hour: ${location.operation_hour}</p>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}" target="_blank" class="btn btn-xs btn-success">
+                                <i class="bi bi-compass"></i> Navigate
+                            </a>
                         `;
 
                         const infoWindow = new google.maps.InfoWindow({ content: infoWindowContent });
@@ -332,7 +359,6 @@ if (navigator.geolocation) {
                             activeInfoWindow = infoWindow;
                         });
 
-                        // Create a result card
                         const resultCard = document.createElement('div');
                         resultCard.className = "card mb-2";
                         resultCard.innerHTML = `
@@ -356,8 +382,8 @@ if (navigator.geolocation) {
                                     <i class="bi bi-geo-alt"></i> View on Map
                                 </button>
                                 <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
-                                   target="_blank"
-                                   class="btn btn-xs btn-success">
+                                target="_blank"
+                                class="btn btn-xs btn-success">
                                     <i class="bi bi-compass"></i> Navigate
                                 </a>
                             </div>
@@ -365,9 +391,8 @@ if (navigator.geolocation) {
                         resultsContainer.appendChild(resultCard);
                     });
 
-                    // Adjust map bounds to fit search results
                     if (data.length > 0) {
-                        map.fitBounds(bounds);
+                        map.fitBounds(bounds); // Adjust map bounds to fit markers
                     }
                 })
                 .catch(error => console.error("Error fetching search results:", error));
