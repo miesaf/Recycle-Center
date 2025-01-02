@@ -163,7 +163,30 @@
             }
         };
 
-        // Add a draggable marker to the map
+        let radiusCircle = null; // Store the circle object
+
+        // Add a circle to the map
+        function addRadiusCircle(center, radius = {{ env('SEARCH_RADIUS') }}) { // Radius in meters)
+            if (radiusCircle) {
+                radiusCircle.setMap(null); // Remove existing circle
+            }
+
+            radiusCircle = new google.maps.Circle({
+                center: center,
+                radius: radius, // Radius in meters
+                map: map,
+                fillColor: "#ADD8E6", // Light blue fill color
+                fillOpacity: 0.3, // Transparency of the circle
+                strokeColor: "#0000FF", // Blue stroke color
+                strokeOpacity: 0.8, // Transparency of the stroke
+                strokeWeight: 2, // Stroke width
+            });
+
+            // Adjust map bounds to fit the circle
+            map.fitBounds(radiusCircle.getBounds());
+        }
+
+        // Update the draggable marker function
         function addDraggableMarker(location) {
             if (userMarker) {
                 userMarker.setMap(null); // Remove existing marker
@@ -176,6 +199,9 @@
                 draggable: true,
             });
 
+            // Add a radius circle around the user's location
+            addRadiusCircle(location);
+
             // Add a drag event listener to update the location
             userMarker.addListener("dragend", (event) => {
                 const newPosition = {
@@ -184,12 +210,15 @@
                 };
                 console.log(`Updated Position: Latitude: ${newPosition.lat}, Longitude: ${newPosition.lng}`);
 
+                // Update the radius circle to the new location
+                addRadiusCircle(newPosition);
+
                 // Optional: Fetch locations based on the new position
                 fetchNearbyLocations(newPosition.lat, newPosition.lng);
             });
         }
 
-        // Fetch nearby locations
+        // In the fetchNearbyLocations function, ensure it does not remove or affect the circle
         function fetchNearbyLocations(latitude, longitude) {
             const url = new URL('/api/search', window.location.origin);
             url.searchParams.append('latitude', latitude);
@@ -235,20 +264,19 @@
                             <p>${location.address}<br/>
                             Operation Hour: ${location.operation_hour}</p>
                             <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
-                               target="_blank"
-                               class="btn btn-xs btn-success"><i class="bi bi-compass"></i> Navigate</a>
+                            target="_blank"
+                            class="btn btn-xs btn-success"><i class="bi bi-compass"></i> Navigate</a>
                         `;
 
                         const infoWindow = new google.maps.InfoWindow({ content: infoWindowContent });
                         infoWindows[location.name] = { marker, infoWindow };
 
                         google.maps.event.addListener(marker, 'click', () => {
-                            if (activeInfoWindow) activeInfoWindow.close(); // Close the currently open info window
+                            if (activeInfoWindow) activeInfoWindow.close();
                             infoWindow.open(map, marker);
                             activeInfoWindow = infoWindow;
                         });
 
-                        // Create a result card
                         const resultCard = document.createElement('div');
                         resultCard.className = "card mb-2";
                         resultCard.innerHTML = `
@@ -272,8 +300,8 @@
                                     <i class="bi bi-geo-alt"></i> View on Map
                                 </button>
                                 <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
-                                   target="_blank"
-                                   class="btn btn-xs btn-success">
+                                target="_blank"
+                                class="btn btn-xs btn-success">
                                     <i class="bi bi-compass"></i> Navigate
                                 </a>
                             </div>
@@ -281,7 +309,6 @@
                         resultsContainer.appendChild(resultCard);
                     });
 
-                    // Adjust map bounds to fit markers
                     if (data.length > 0) {
                         map.fitBounds(bounds);
                     }

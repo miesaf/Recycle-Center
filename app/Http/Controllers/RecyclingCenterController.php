@@ -295,7 +295,7 @@ class RecyclingCenterController extends Controller
             if ($request->latitude && $request->longitude) {
                 $latitude = $request->latitude; // User's latitude
                 $longitude = $request->longitude; // User's longitude
-                $radius = $request->radius ?? 3; // Optional radius (default 3 km)
+                $radius = $request->radius ?? (env('SEARCH_RADIUS') / 1000); // Optional radius (default 3 km)
 
                 $query->selectRaw('*, (6371 * ACOS(COS(RADIANS(?)) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS(?)) + SIN(RADIANS(?)) * SIN(RADIANS(latitude)))) AS distance', [
                     $latitude, $longitude, $latitude
