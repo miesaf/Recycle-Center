@@ -13,11 +13,11 @@
 
                         <h1 class="display-5 fw-bold">Welcome to our Recycling Community</h1>
 
-                        <p class="col-md-8 fs-4">At GeoRecycle, we are dedicated to promote a sustainable and eco friednly environment through recycling.</p>
+                        <p class="col-md-8 fs-4">At GeoRecycle, we are dedicated to promote a sustainable and eco friendly environment through recycling.</p>
 
                         <p class="col-md-8 fs-4">Recycling is an essential practice that helps reduce waste, conserve resources, and minmize our impact on the planet. By participating in recycling, you contribute to creating a cleaner and healthier world for future generations.</p>
 
-                        <p class="col-md-8 fs-4">Join us in our mission to make a positive impact on the environemtn. Whether you're a recycling enthusiast or just geting started, we provide tools and information to help you recycle effectively and make a difference.</p>
+                        <p class="col-md-8 fs-4">Join us in our mission to make a positive impact on the environment. Whether you're a recycling enthusiast or just geting started, we provide tools and information to help you recycle effectively and make a difference.</p>
                         {{-- <button class="btn btn-primary btn-lg" type="button">Example button</button> --}}
                     </div>
                 </div>

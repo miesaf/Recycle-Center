@@ -29,25 +29,13 @@
                             <h3 class="card-title">Write New Recycle Center Review</h3>
                         </div>
                         <div class="card-body">
-                            <form method="POST" action="{{ route('review.store') }}" novalidate>
+                            <form method="POST" action="{{ route('review.fastStore', request()->route('id')) }}" novalidate>
                                 @csrf
 
                                 <!-- Premise -->
                                 <div class="mb-3">
                                     <label for="recycling_center" class="form-label">Recycle Center</label>
-                                    <select id="recycling_center" class="form-select" name="recycling_center" required>
-                                        <option value selected>Please select</option>
-                                        <option disabled></option>
-                                        @foreach($recyclingCenters as $recyclingCenter)
-                                        <option value="{{ $recyclingCenter->id }}" >{{ $recyclingCenter->name }}</option>
-                                        @endforeach
-                                    </select>
-
-                                    @error("recycling_center")
-                                    <div class="form-text">
-                                        <font color="red">{{ $message }}</font>
-                                    </div>
-                                    @enderror
+                                    <input type="text" class="form-control" id="recycling_center" name="recycling_center" value="{{ $recyclingCenters->name }}" disabled>
                                 </div>
 
                                 <!-- Rating -->

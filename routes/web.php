@@ -8,6 +8,10 @@ use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\GoogleController;
+
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -18,7 +22,7 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::get('/map', function () {
-    return view('map2');
+    return view('map');
 })->name('map');
 
 Route::get('/services', function () {
@@ -28,6 +32,10 @@ Route::get('/services', function () {
 Route::get('/info', function () {
     return view('info');
 })->name('info');
+
+Route::get('/privacy', function () {
+    return view('privacy');
+})->name('privacy');
 
 Route::prefix('contributor')->group(function () {
     Route::get('register', function () {
@@ -52,8 +60,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('owner', OwnerController::class);
     Route::resource('review', ReviewController::class);
 
-    Route::put('/center/{id}/verify', [RecyclingCenterController::class, 'verify'])->name('center.verify');
-    Route::put('/owner/{id}/verify', [OwnerController::class, 'verify'])->name('owner.verify');
+    Route::get('review/{id}/fast', [ReviewController::class, 'fastReview'])->name('review.fast');
+    Route::post('review/{id}/fast', [ReviewController::class, 'storeFastReview'])->name('review.fastStore');
+
+    Route::put('center/{id}/verify', [RecyclingCenterController::class, 'verify'])->name('center.verify');
+    Route::put('owner/{id}/verify', [OwnerController::class, 'verify'])->name('owner.verify');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

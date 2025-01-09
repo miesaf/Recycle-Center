@@ -21,38 +21,31 @@
 <body class="login-page bg-body-secondary">
     <div class="login-box">
         <div class="login-logo"> <a href="{{ route('welcome') }}"><b>{{ env("APP_NAME") }}</b></a> </div> <!-- /.login-logo -->
+
         <div class="card">
             <div class="card-body login-card-body">
-                <p class="login-box-msg">Sign in to start your session</p>
-                <form action="{{ route('login') }}" method="POST">
+                <p class="login-box-msg">You forgot your password? Here you can easily retrieve a new password.</p>
+                <form action="{{ route('password.email') }}" method="POST">
                     @csrf
 
                     <div class="input-group mb-3"> <input type="email" class="form-control" name="email" value="{{ old('email') }}" placeholder="Email">
                         <div class="input-group-text"> <span class="bi bi-envelope"></span> </div>
                     </div>
-                    <div class="input-group mb-3"> <input type="password" class="form-control" name="password" placeholder="Password" value="{{ old('password') }}">
-                        <div class="input-group-text"> <span class="bi bi-lock-fill"></span> </div>
-                    </div> <!--begin::Row-->
+
                     <div class="row">
-                        <div class="col-4">
-                            <div class="d-grid gap-2"> <button type="submit" class="btn btn-primary">Sign In</button> </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block">Request New Password</button>
                         </div> <!-- /.col -->
                     </div> <!--end::Row-->
                 </form>
 
-                <div class="social-auth-links text-center mb-3">
-                    <p>- OR -</p>
-                    <a href="{{ route('auth.google') }}" class="btn btn-block btn-danger">
-                        <i class="fab fa-google-plus mr-2"></i> Sign in using Google
-                    </a>
-                </div>
-                <!-- /.social-auth-links -->
-
                 <br/>
 
-                @if (Route::has('password.request'))
-                <p class="mb-1"> <a href="{{ route('password.request') }}">I forgot my password</a> </p>
-                @endif
+                <p class="mb-0">
+                    <a href="{{ route("login") }}" class="text-center">
+                        Login
+                    </a>
+                </p>
 
                 <p class="mb-0">
                     <a href="{{ route("register") }}" class="text-center">

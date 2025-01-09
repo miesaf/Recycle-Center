@@ -91,11 +91,12 @@
                                     @enderror
                                 </div>
 
-                                <!-- Address -->
+    
+
+                                <!-- Branch Address -->
                                 <div class="mb-3">
                                     <label for="address" class="form-label">Branch Address</label>
                                     <textarea id="address" class="form-control" rows="5" name="address" required>{{ $recyclingCenter->address }}</textarea>
-
                                     @error("address")
                                     <div class="form-text">
                                         <font color="red">{{ $message }}</font>
@@ -107,7 +108,6 @@
                                 <div class="mb-3">
                                     <label for="latitude" class="form-label">Branch Latitude</label>
                                     <input type="text" class="form-control @error('latitude') is-invalid @enderror" id="latitude" name="latitude" value="{{ $recyclingCenter->latitude }}" required autofocus >
-
                                     @error("latitude")
                                     <div class="form-text">
                                         <font color="red">{{ $message }}</font>
@@ -119,13 +119,112 @@
                                 <div class="mb-3">
                                     <label for="longitude" class="form-label">Branch Longitude</label>
                                     <input type="text" class="form-control @error('longitude') is-invalid @enderror" id="longitude" name="longitude" value="{{ $recyclingCenter->longitude }}" required autofocus >
-
                                     @error("longitude")
                                     <div class="form-text">
                                         <font color="red">{{ $message }}</font>
                                     </div>
                                     @enderror
                                 </div>
+
+                                <!-- Google Maps and Places API Integration -->
+                                <script>
+                                    let autocomplete;
+                                    let geocoder;
+                                    let map;
+                                    let marker;
+
+                                    // Initialize map and geocoder
+                                    function initMap() {
+                                        geocoder = new google.maps.Geocoder();
+                                         // Change default location to Shah Alam Section 7
+                                        const defaultLocation = { lat: 3.07258580566939, lng: 101.5183278411865 };  // Shah Alam Section 7 coordinates
+
+                                        // Initialize the map
+                                        map = new google.maps.Map(document.getElementById("map"), {
+                                            center: defaultLocation,
+                                            zoom: 15,
+                                        });
+
+                                        // Add a draggable marker
+                                        marker = new google.maps.Marker({
+                                            position: defaultLocation,
+                                            map: map,
+                                            draggable: true,
+                                        });
+
+                                        // Initialize the Autocomplete for the address input field
+                                        const addressInput = document.getElementById("address");
+                                        autocomplete = new google.maps.places.Autocomplete(addressInput, {
+                                            types: ["geocode"],
+                                            componentRestrictions: { country: "MY" },  // Restrict to Malaysia (or another country if needed)
+                                        });
+
+                                        // Listener when a user selects a place from the autocomplete suggestions
+                                        autocomplete.addListener("place_changed", function () {
+                                            const place = autocomplete.getPlace();
+
+                                            if (place.geometry) {
+                                                const latitude = place.geometry.location.lat();
+                                                const longitude = place.geometry.location.lng();
+
+                                                // Update the latitude and longitude fields
+                                                document.getElementById("latitude").value = latitude;
+                                                document.getElementById("longitude").value = longitude;
+
+                                                // Update the address field and make it uppercase
+                                                document.getElementById("address").value = place.formatted_address.toUpperCase();
+
+                                                // Move the map center and update the marker position
+                                                marker.setPosition(place.geometry.location);
+                                                map.setCenter(place.geometry.location);
+                                            } else {
+                                                alert("No details available for input: " + addressInput.value);
+                                            }
+                                        });
+
+                                        // When the user drags the marker, update the fields accordingly
+                                        google.maps.event.addListener(marker, "dragend", function (event) {
+                                            const lat = event.latLng.lat();
+                                            const lng = event.latLng.lng();
+                                            document.getElementById("latitude").value = lat;
+                                            document.getElementById("longitude").value = lng;
+                                            getAddress(lat, lng);
+                                        });
+
+                                        // When the user clicks on the map, place the marker and update fields
+                                        google.maps.event.addListener(map, "click", function (event) {
+                                            const lat = event.latLng.lat();
+                                            const lng = event.latLng.lng();
+                                            marker.setPosition(event.latLng);
+                                            document.getElementById("latitude").value = lat;
+                                            document.getElementById("longitude").value = lng;
+                                            getAddress(lat, lng);
+                                        });
+                                    }
+
+                                    // Function to get address from latitude and longitude using Geocoding API
+                                    function getAddress(lat, lng) {
+                                        const latLng = new google.maps.LatLng(lat, lng);
+                                        geocoder.geocode({ location: latLng }, function (results, status) {
+                                            if (status === google.maps.GeocoderStatus.OK) {
+                                                if (results[0]) {
+                                                    document.getElementById("address").value = results[0].formatted_address.toUpperCase(); // Auto capitalize the address
+                                                }
+                                            } else {
+                                                alert("Geocoder failed: " + status);
+                                            }
+                                        });
+                                    }
+                                </script>
+
+                                <!-- Google Map Display -->
+                                <div class="mb-3">
+                                    <label for="map" class="form-label">Select Branch Location</label>
+                                    <div id="map" style="height: 600px; width: 100%;"></div>
+                                </div>
+
+                                <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAP_API_KEY') }}&callback=initMap&libraries=places"></script>
+
 
                                 <!-- Premise Type -->
                                 <div class="mb-3">

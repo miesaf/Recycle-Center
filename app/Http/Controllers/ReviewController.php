@@ -61,7 +61,7 @@ class ReviewController extends Controller
         $validated = $request->validate([
             'recycling_center' => 'required|integer',
             'rating' => 'required|numeric|between:1,5',
-            'review' => 'optional|max:255',
+            'review' => 'nullable|max:255',
         ]);
 
         $review = new Review;
@@ -103,7 +103,7 @@ class ReviewController extends Controller
     {
         $validated = $request->validate([
             'rating' => 'required|numeric|between:1,5',
-            'review' => 'optional|max:255',
+            'review' => 'nullable|max:255',
         ]);
 
         $review = Review::find($id);
@@ -128,6 +128,54 @@ class ReviewController extends Controller
             Session::flash('success', 'Recycle center review deleted!');
         } else {
             Session::flash('danger', 'Failed to delete recycle center review!');
+        }
+
+        return redirect()->route("review.index");
+    }
+
+    public function fastReview(string $id)
+    {
+        $userId = auth()->id(); // Retrieve the authenticated user's ID
+
+        if ($id) {
+            // Fetch recycling centers excluding those already reviewed by the user.
+            $recyclingCenters = RecyclingCenter::whereDoesntHave('reviews', function ($query) use ($userId) {
+                $query->where('user', $userId); // Match reviews by the specific user
+            })
+            ->where("id", "=", $id) // Only current recycling center
+            ->with('ownerInfo') // Include owner info if needed
+            ->first();
+
+            if($recyclingCenters) {
+                // Return or process the $recyclingCenters as required
+                return view('review.fast', compact('recyclingCenters'));
+            } else {
+                Session::flash('danger', 'Cannot add review to the recycle center!');
+                return redirect()->route("review.index");
+            }
+        } else {
+            Session::flash('danger', 'Recycle center not found!');
+            return redirect()->route("review.index");
+        }
+    }
+
+    public function storeFastReview(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'rating' => 'required|numeric|between:1,5',
+            'review' => 'nullable|max:255',
+        ]);
+
+        $review = new Review;
+        $review->recycling_center = $id;
+        $review->user = Auth::user()->id;
+        $review->rating = $request->rating;
+        $review->review = $request->review;
+
+        if($review->save()) {
+            Session::flash('success', 'Recycle center review created!');
+        } else {
+            Session::flash('danger', 'Failed to create recycle center review!');
         }
 
         return redirect()->route("review.index");
