@@ -91,6 +91,38 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal modal-lg fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h1 class="modal-title fs-5" id="reviewModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body bg-success-subtle">
+                    <div class="timeline" id="reviews-container"> <!-- timeline time label --> <!-- timeline item -->
+                        <div> <i class="timeline-icon bi bi-chat-text-fill text-bg-warning"></i>
+                            <div class="timeline-item"> <span class="time"> <i class="bi bi-clock-fill"></i> 27 mins ago
+                                </span>
+                                <h3 class="timeline-header"> <a href="#">Jay White</a> commented on your post
+                                </h3>
+                                <div class="timeline-body">
+                                    Take me to your leader! Switzerland is small and
+                                    neutral! We are more like Germany, ambitious and
+                                    misunderstood!
+                                </div>
+                            </div>
+                        </div> <!-- END timeline item -->
+                        <div> <i class="timeline-icon bi bi-clock-fill text-bg-secondary"></i> </div>
+                    </div>
+                </div>
+                {{-- <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div> --}}
+            </div>
+        </div>
+    </div>
+
     <script>
         let map;
         let markers = []; // Array to store all markers
@@ -266,6 +298,9 @@
                             <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
                             target="_blank"
                             class="btn btn-xs btn-success"><i class="bi bi-compass"></i> Navigate</a>
+                            <button type="button" class="btn btn-xs btn-warning" onClick="viewReview(${location.id})">
+                                <i class="bi bi-chat-text"></i> Reviews
+                            </button>
                         `;
 
                         const infoWindow = new google.maps.InfoWindow({ content: infoWindowContent });
@@ -304,6 +339,9 @@
                                 class="btn btn-xs btn-success">
                                     <i class="bi bi-compass"></i> Navigate
                                 </a>
+                                <button type="button" class="btn btn-xs btn-warning" onClick="viewReview(${location.id})">
+                                    <i class="bi bi-chat-text"></i> Reviews
+                                </button>
                             </div>
                         `;
                         resultsContainer.appendChild(resultCard);
@@ -380,6 +418,9 @@
                             <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}" target="_blank" class="btn btn-xs btn-success">
                                 <i class="bi bi-compass"></i> Navigate
                             </a>
+                            <button type="button" class="btn btn-xs btn-warning" onClick="viewReview(${location.id})">
+                                <i class="bi bi-chat-text"></i> Reviews
+                            </button>
                         `;
 
                         const infoWindow = new google.maps.InfoWindow({ content: infoWindowContent });
@@ -418,6 +459,9 @@
                                    class="btn btn-xs btn-success">
                                     <i class="bi bi-compass"></i> Navigate
                                 </a>
+                                <button type="button" class="btn btn-xs btn-warning" onClick="viewReview(${location.id})">
+                                    <i class="bi bi-chat-text"></i> Reviews
+                                </button>
                             </div>
                         `;
                         resultsContainer.appendChild(resultCard);
@@ -469,6 +513,79 @@
             map.setZoom(17);
             infoWindow.open(map, marker);
             activeInfoWindow = infoWindow; // Update the active info window
+        }
+
+        function viewReview(id) {
+            const modal = new bootstrap.Modal(document.getElementById('reviewModal'));
+
+            let reviews = [];
+            document.getElementById('reviews-container').innerHTML = "<p>Fetching reviews . . .</p>";
+
+            // Build the URL
+            const url = new URL('/api/' + id + '/getReviews', window.location.origin);
+
+            // Fetch data from the server
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const reviewContainer = document.getElementById('reviews-container');
+                    reviewContainer.innerHTML = ""; // Clear previous results
+
+                    if (data.length === 0) {
+                        reviewContainer.innerHTML = "<p>No review found.</p>";
+                        return;
+                    }
+
+                    data.forEach(review => {
+                        document.getElementById('reviewModalLabel').innerHTML = `Reviews for ${review.center_info.name}`;
+
+                        // Create a Date object
+                        const date = new Date(review.created_at);
+
+                        // Extract parts of the date and time
+                        const year = date.getFullYear();
+                        const month = date.getMonth(); // Month index (0 = January, 1 = February, etc.)
+                        const day = date.getDate();
+                        const hours = date.getHours();
+                        const minutes = String(date.getMinutes()).padStart(2, "0");
+
+                        // Array of month names
+                        const monthNames = [
+                            "January", "February", "March", "April", "May", "June",
+                            "July", "August", "September", "October", "November", "December"
+                        ];
+
+                        // Format the readable date and time
+                        const readableDate = `${day} ${monthNames[month]} ${year}`;
+                        const readableTime = `${(hours % 12) || 12}:${minutes} ${hours >= 12 ? "PM" : "AM"}`;
+
+                        const resultCard = document.createElement('div');
+                        resultCard.innerHTML = `
+                            <i class="timeline-icon bi bi-chat-text-fill text-bg-warning"></i>
+                            <div class="timeline-item"> <span class="time"> <i class="bi bi-clock-fill"></i> ${readableTime}, ${readableDate}
+                                </span>
+                                <h3 class="timeline-header"> <a href="#">${review.user_info.name}</a> commented
+                                </h3>
+                                <div class="timeline-body">
+                                    ${review.review}
+                                </div>
+                            </div>
+                        `;
+                        reviewContainer.appendChild(resultCard);
+                    });
+                })
+                .then(() => {
+                    modal.show();
+                })
+                .catch(error => console.error("Error fetching reviews:", error));
+
+            // modal.show();
+        }
+
+        function closeReview() {
+            const modal = new bootstrap.Modal(document.getElementById('reviewModal'));
+
+            modal.hide();
         }
     </script>
 

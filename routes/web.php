@@ -47,6 +47,7 @@ Route::prefix('contributor')->group(function () {
 
 Route::get('/api/locations', [RecyclingCenterController::class, 'getLocations']);
 Route::get('/api/search', [RecyclingCenterController::class, 'search'])->name('searchLocations');
+Route::get('/api/{id}/getReviews', [ReviewController::class, 'getReviews'])->name('getReviews');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
