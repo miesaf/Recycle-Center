@@ -532,6 +532,7 @@
                     reviewContainer.innerHTML = ""; // Clear previous results
 
                     if (data.length === 0) {
+                        document.getElementById('reviewModalLabel').innerHTML = `Reviews`;
                         reviewContainer.innerHTML = "<p>No review found.</p>";
                         return;
                     }
@@ -578,14 +579,6 @@
                     modal.show();
                 })
                 .catch(error => console.error("Error fetching reviews:", error));
-
-            // modal.show();
-        }
-
-        function closeReview() {
-            const modal = new bootstrap.Modal(document.getElementById('reviewModal'));
-
-            modal.hide();
         }
     </script>
 
