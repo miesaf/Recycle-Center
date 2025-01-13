@@ -34,9 +34,9 @@
             <div class="row">
                 <!-- Map Settings Card -->
                 <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Map Settings</h3>
+                    <div class="card bg-success-subtle">
+                        <div class="card-header bg-success">
+                            <h3 class="card-title text-white">Map Settings</h3>
                         </div>
                         <div class="card-body">
                             <form method="GET" action="{{ route('searchLocations') }}" onsubmit="search(); return false;">
@@ -78,9 +78,9 @@
 
                 <!-- Map Display Card -->
                 <div class="col-md-9">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Map Display</h3>
+                    <div class="card bg-success-subtle">
+                        <div class="card-header bg-success">
+                            <h3 class="card-title text-white">Map Display</h3>
                         </div>
                         <div class="card-body">
                             <div id="map"></div>
@@ -315,7 +315,7 @@
                         const resultCard = document.createElement('div');
                         resultCard.className = "card mb-2";
                         resultCard.innerHTML = `
-                            <div class="card-body">
+                            <div class="card-body bg-success-subtle">
                                 <h5 class="card-title"><b>${location.name}</b></h5><br/>
                                 <p class="card-text">
                                     ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'}) <a href="{{ route('review.index') }}/${location.id}/fast" target="_blank">Review this</a></small><br/>
@@ -435,7 +435,7 @@
                         const resultCard = document.createElement('div');
                         resultCard.className = "card mb-2";
                         resultCard.innerHTML = `
-                            <div class="card-body">
+                            <div class="card-body bg-success-subtle">
                                 <h5 class="card-title"><b>${location.name}</b></h5><br/>
                                 <p class="card-text">
                                     ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'}) <a href="{{ route('review.index') }}/${location.id}/fast" target="_blank">Review this</a></small><br/>

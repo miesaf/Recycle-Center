@@ -23,7 +23,7 @@
         <div class="container-fluid"> <!--begin::Row-->
             <div class="row">
                 <div class="col-12"> <!-- Default box -->
-                    <div class="card card-primary card-outline">
+                    <div class="card card-success bg-success-subtle">
                         <div class="card-header">
                             <h3 class="card-title">Update Recycle Center Owner Information</h3>
                         </div>

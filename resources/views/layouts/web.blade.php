@@ -22,7 +22,7 @@
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary"> <!--begin::App Wrapper-->
     <div class="app-wrapper"> <!--begin::Header-->
 
-        <nav class="app-header navbar navbar-expand-lg bg-body-tertiary">
+        <nav class="app-header navbar navbar-expand-lg bg-success text-white" data-bs-theme="dark">
             <div class="container-fluid">
                 <a class="navbar-brand" href="{{ route("welcome") }}">
                     <img src="{{ asset('assets/img/georecycle-logo.jpg') }}" height="40px">
@@ -46,7 +46,7 @@
 
         @yield('body')
 
-        <footer class="app-footer"> <!--begin::To the end-->
+        <footer class="app-footer bg-success text-white" data-bs-theme="dark"> <!--begin::To the end-->
             <div class="float-end d-none d-sm-inline">Anything you want</div> <!--end::To the end--> <!--begin::Copyright--> <strong>
                 Copyright &copy; 2024&nbsp;
                 <a href="https://adminlte.io" class="text-decoration-none">{{ env("APP_NAME") }}</a>.

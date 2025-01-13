@@ -42,7 +42,7 @@
                     </div>
                     @endsession
 
-                    <div class="card card-primary card-outline">
+                    <div class="card card-success bg-success-subtle">
                         <div class="card-header">
                             <h3 class="card-title">List of Recycle Center Reviews</h3>
                         </div>

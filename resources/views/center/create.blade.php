@@ -23,7 +23,7 @@
         <div class="container-fluid"> <!--begin::Row-->
             <div class="row">
                 <div class="col-12"> <!-- Default box -->
-                    <div class="card card-primary card-outline">
+                    <div class="card card-success bg-success-subtle">
                         <div class="card-header">
                             <h3 class="card-title">Register New Recycle Center</h3>
                         </div>
@@ -36,7 +36,7 @@
                                 <label for="name" class="form-label">Branch Name</label>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
                                     value="{{ old('name') }}" required autofocus oninput="this.value = this.value.toUpperCase();">
-                            
+
                                 @error("name")
                                     <div class="form-text">
                                         <font color="red">{{ $message }}</font>
@@ -49,7 +49,7 @@
                                     <label for="phone_no" class="form-label">Branch Phone Number</label>
                                     <input type="text" class="form-control @error('phone_no') is-invalid @enderror" id="phone_no" name="phone_no"
                                         value="{{ old('phone_no') }}" required autofocus oninput="formatPhoneNumber(this);">
-                                
+
                                     @error("phone_no")
                                         <div class="form-text">
                                             <font color="red">{{ $message }}</font>
@@ -245,7 +245,7 @@
                                 <input type="text" class="form-control" id="operation_hour" name="operation_hour"
                                     value="{{ old('operation_hour') }}" required autofocus oninput="this.value = this.value.toUpperCase();" <!--
                                     Auto capitalize the input -->
-                            
+
                             </div>
 
                                 @if (auth()->user()->is_admin)
