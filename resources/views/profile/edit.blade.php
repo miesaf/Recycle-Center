@@ -41,8 +41,8 @@
                     </div>
                     @endsession
 
-                    <div class="card card-primary card-outline">
-                        <div class="card-header">
+                    <div class="card card-success bg-success-subtle">
+                        <div class="card-header bg-success">
                             <h3 class="card-title">Update Profile Information</h3>
                         </div>
                         <div class="card-body">

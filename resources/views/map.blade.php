@@ -34,9 +34,9 @@
             <div class="row">
                 <!-- Map Settings Card -->
                 <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Map Settings</h3>
+                    <div class="card bg-success-subtle">
+                        <div class="card-header bg-success">
+                            <h3 class="card-title text-white">Map Settings</h3>
                         </div>
                         <div class="card-body">
                             <form method="GET" action="{{ route('searchLocations') }}" onsubmit="search(); return false;">
@@ -58,12 +58,36 @@
                                         <label class="form-check-label">Metal</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="f[]" value="Fabric">
-                                        <label class="form-check-label">Fabric</label>
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Textiles (Clothing and Fabric)">
+                                        <label class="form-check-label">Textiles (Clothing and Fabric)</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="f[]" value="Glass">
                                         <label class="form-check-label">Glass</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Plastic">
+                                        <label class="form-check-label">Plastic</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Electronics (E-Waste)">
+                                        <label class="form-check-label">Electronics (E-Waste)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Cardboard">
+                                        <label class="form-check-label">Cardboard</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Batteries">
+                                        <label class="form-check-label">Batteries</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Tires">
+                                        <label class="form-check-label">Tires</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Used Cooking Oil">
+                                        <label class="form-check-label">Used Cooking Oil</label>
                                     </div>
                                 </div>
                             </form>
@@ -78,15 +102,47 @@
 
                 <!-- Map Display Card -->
                 <div class="col-md-9">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Map Display</h3>
+                    <div class="card bg-success-subtle">
+                        <div class="card-header bg-success">
+                            <h3 class="card-title text-white">Map Display</h3>
                         </div>
                         <div class="card-body">
                             <div id="map"></div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal modal-lg fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h1 class="modal-title fs-5" id="reviewModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body bg-success-subtle">
+                    <div class="timeline" id="reviews-container"> <!-- timeline time label --> <!-- timeline item -->
+                        <div> <i class="timeline-icon bi bi-chat-text-fill text-bg-warning"></i>
+                            <div class="timeline-item"> <span class="time"> <i class="bi bi-clock-fill"></i> 27 mins ago
+                                </span>
+                                <h3 class="timeline-header"> <a href="#">Jay White</a> commented on your post
+                                </h3>
+                                <div class="timeline-body">
+                                    Take me to your leader! Switzerland is small and
+                                    neutral! We are more like Germany, ambitious and
+                                    misunderstood!
+                                </div>
+                            </div>
+                        </div> <!-- END timeline item -->
+                        <div> <i class="timeline-icon bi bi-clock-fill text-bg-secondary"></i> </div>
+                    </div>
+                </div>
+                {{-- <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div> --}}
             </div>
         </div>
     </div>
@@ -266,6 +322,9 @@
                             <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
                             target="_blank"
                             class="btn btn-xs btn-success"><i class="bi bi-compass"></i> Navigate</a>
+                            <button type="button" class="btn btn-xs btn-warning" onClick="viewReview(${location.id})">
+                                <i class="bi bi-chat-text"></i> Reviews
+                            </button>
                         `;
 
                         const infoWindow = new google.maps.InfoWindow({ content: infoWindowContent });
@@ -280,7 +339,7 @@
                         const resultCard = document.createElement('div');
                         resultCard.className = "card mb-2";
                         resultCard.innerHTML = `
-                            <div class="card-body">
+                            <div class="card-body bg-success-subtle">
                                 <h5 class="card-title"><b>${location.name}</b></h5><br/>
                                 <p class="card-text">
                                     ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'}) <a href="{{ route('review.index') }}/${location.id}/fast" target="_blank">Review this</a></small><br/>
@@ -304,6 +363,9 @@
                                 class="btn btn-xs btn-success">
                                     <i class="bi bi-compass"></i> Navigate
                                 </a>
+                                <button type="button" class="btn btn-xs btn-warning" onClick="viewReview(${location.id})">
+                                    <i class="bi bi-chat-text"></i> Reviews
+                                </button>
                             </div>
                         `;
                         resultsContainer.appendChild(resultCard);
@@ -380,6 +442,9 @@
                             <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}" target="_blank" class="btn btn-xs btn-success">
                                 <i class="bi bi-compass"></i> Navigate
                             </a>
+                            <button type="button" class="btn btn-xs btn-warning" onClick="viewReview(${location.id})">
+                                <i class="bi bi-chat-text"></i> Reviews
+                            </button>
                         `;
 
                         const infoWindow = new google.maps.InfoWindow({ content: infoWindowContent });
@@ -394,7 +459,7 @@
                         const resultCard = document.createElement('div');
                         resultCard.className = "card mb-2";
                         resultCard.innerHTML = `
-                            <div class="card-body">
+                            <div class="card-body bg-success-subtle">
                                 <h5 class="card-title"><b>${location.name}</b></h5><br/>
                                 <p class="card-text">
                                     ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'}) <a href="{{ route('review.index') }}/${location.id}/fast" target="_blank">Review this</a></small><br/>
@@ -418,6 +483,9 @@
                                    class="btn btn-xs btn-success">
                                     <i class="bi bi-compass"></i> Navigate
                                 </a>
+                                <button type="button" class="btn btn-xs btn-warning" onClick="viewReview(${location.id})">
+                                    <i class="bi bi-chat-text"></i> Reviews
+                                </button>
                             </div>
                         `;
                         resultsContainer.appendChild(resultCard);
@@ -469,6 +537,72 @@
             map.setZoom(17);
             infoWindow.open(map, marker);
             activeInfoWindow = infoWindow; // Update the active info window
+        }
+
+        function viewReview(id) {
+            const modal = new bootstrap.Modal(document.getElementById('reviewModal'));
+
+            let reviews = [];
+            document.getElementById('reviews-container').innerHTML = "<p>Fetching reviews . . .</p>";
+
+            // Build the URL
+            const url = new URL('/api/' + id + '/getReviews', window.location.origin);
+
+            // Fetch data from the server
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const reviewContainer = document.getElementById('reviews-container');
+                    reviewContainer.innerHTML = ""; // Clear previous results
+
+                    if (data.length === 0) {
+                        document.getElementById('reviewModalLabel').innerHTML = `Reviews`;
+                        reviewContainer.innerHTML = "<p>No review found.</p>";
+                        return;
+                    }
+
+                    data.forEach(review => {
+                        document.getElementById('reviewModalLabel').innerHTML = `Reviews for ${review.center_info.name}`;
+
+                        // Create a Date object
+                        const date = new Date(review.created_at);
+
+                        // Extract parts of the date and time
+                        const year = date.getFullYear();
+                        const month = date.getMonth(); // Month index (0 = January, 1 = February, etc.)
+                        const day = date.getDate();
+                        const hours = date.getHours();
+                        const minutes = String(date.getMinutes()).padStart(2, "0");
+
+                        // Array of month names
+                        const monthNames = [
+                            "January", "February", "March", "April", "May", "June",
+                            "July", "August", "September", "October", "November", "December"
+                        ];
+
+                        // Format the readable date and time
+                        const readableDate = `${day} ${monthNames[month]} ${year}`;
+                        const readableTime = `${(hours % 12) || 12}:${minutes} ${hours >= 12 ? "PM" : "AM"}`;
+
+                        const resultCard = document.createElement('div');
+                        resultCard.innerHTML = `
+                            <i class="timeline-icon bi bi-chat-text-fill text-bg-warning"></i>
+                            <div class="timeline-item"> <span class="time"> <i class="bi bi-clock-fill"></i> ${readableTime}, ${readableDate}
+                                </span>
+                                <h3 class="timeline-header"> <a href="#">${review.user_info.name}</a> commented
+                                </h3>
+                                <div class="timeline-body">
+                                    ${review.review}
+                                </div>
+                            </div>
+                        `;
+                        reviewContainer.appendChild(resultCard);
+                    });
+                })
+                .then(() => {
+                    modal.show();
+                })
+                .catch(error => console.error("Error fetching reviews:", error));
         }
     </script>
 

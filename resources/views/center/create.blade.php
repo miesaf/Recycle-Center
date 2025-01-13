@@ -23,7 +23,7 @@
         <div class="container-fluid"> <!--begin::Row-->
             <div class="row">
                 <div class="col-12"> <!-- Default box -->
-                    <div class="card card-primary card-outline">
+                    <div class="card card-success bg-success-subtle">
                         <div class="card-header">
                             <h3 class="card-title">Register New Recycle Center</h3>
                         </div>
@@ -36,7 +36,7 @@
                                 <label for="name" class="form-label">Branch Name</label>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
                                     value="{{ old('name') }}" required autofocus oninput="this.value = this.value.toUpperCase();">
-                            
+
                                 @error("name")
                                     <div class="form-text">
                                         <font color="red">{{ $message }}</font>
@@ -49,7 +49,7 @@
                                     <label for="phone_no" class="form-label">Branch Phone Number</label>
                                     <input type="text" class="form-control @error('phone_no') is-invalid @enderror" id="phone_no" name="phone_no"
                                         value="{{ old('phone_no') }}" required autofocus oninput="formatPhoneNumber(this);">
-                                
+
                                     @error("phone_no")
                                         <div class="form-text">
                                             <font color="red">{{ $message }}</font>
@@ -72,13 +72,43 @@
                                     </div>
 
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="service3" name="services[]" value="Fabric">
-                                        <label class="form-check-label" for="service3"> Fabric</label>
+                                        <input class="form-check-input" type="checkbox" id="service3" name="services[]" value="Textiles (Clothing and Fabric)">
+                                        <label class="form-check-label" for="service3"> Textiles (Clothing and Fabric)</label>
                                     </div>
 
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="service4" name="services[]" value="Glass">
                                         <label class="form-check-label" for="service4"> Glass</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service5" name="services[]" value="Plastic">
+                                        <label class="form-check-label" for="service5"> Plastic</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service6" name="services[]" value="Electronics (E-Waste)">
+                                        <label class="form-check-label" for="service6"> Electronics (E-Waste)</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service7" name="services[]" value="Cardboard">
+                                        <label class="form-check-label" for="service7"> Cardboard</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service9" name="services[]" value="Batteries">
+                                        <label class="form-check-label" for="service9"> Batteries</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service10" name="services[]" value="Tires">
+                                        <label class="form-check-label" for="service10"> Tires</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service11" name="services[]" value="Used Cooking Oil">
+                                        <label class="form-check-label" for="service11"> Used Cooking Oil</label>
                                     </div>
 
                                     @error("services")
@@ -245,7 +275,7 @@
                                 <input type="text" class="form-control" id="operation_hour" name="operation_hour"
                                     value="{{ old('operation_hour') }}" required autofocus oninput="this.value = this.value.toUpperCase();" <!--
                                     Auto capitalize the input -->
-                            
+
                             </div>
 
                                 @if (auth()->user()->is_admin)

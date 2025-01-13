@@ -1,5 +1,5 @@
 <!--begin::Sidebar-->
-<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark"> <!--begin::Sidebar Brand-->
+<aside class="app-sidebar bg-success shadow" data-bs-theme="dark"> <!--begin::Sidebar Brand-->
     <div class="sidebar-brand"> <!--begin::Brand Link-->
         <a href="{{ route("dashboard") }}" class="brand-link"> <!--begin::Brand Text-->
             <img src="{{ asset('assets/img/georecycle-logo.jpg') }}" height="40px">

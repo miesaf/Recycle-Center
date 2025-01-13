@@ -23,7 +23,7 @@
         <div class="container-fluid"> <!--begin::Row-->
             <div class="row">
                 <div class="col-12"> <!-- Default box -->
-                    <div class="card card-primary card-outline">
+                    <div class="card card-success bg-success-subtle">
                         <div class="card-header">
                             <h3 class="card-title">Update Recycle Center Information</h3>
                         </div>
@@ -35,7 +35,7 @@
                                 <!-- Name -->
                                 <div class="mb-3">
                                     <label for="name" class="form-label">Branch Name</label>
-                                    <input type="text" class="form-control @error('title') is-invalid @enderror" id="name" name="name" value="{{ $recyclingCenter->name }}" required autofocus >
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ $recyclingCenter->name }}" required autofocus >
 
                                     @error("name")
                                     <div class="form-text">
@@ -75,13 +75,43 @@
                                     </div>
 
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="service3" name="services[]" value="Fabric" {{ in_array("Fabric", $servicesArr) ? "checked" : null }}>
-                                        <label class="form-check-label" for="service3"> Fabric</label>
+                                        <input class="form-check-input" type="checkbox" id="service3" name="services[]" value="Textiles (Clothing and Fabric)" {{ in_array("Textiles (Clothing and Fabric)", $servicesArr) ? "checked" : null }}>
+                                        <label class="form-check-label" for="service3"> Textiles (Clothing and Fabric)</label>
                                     </div>
 
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="service4" name="services[]" value="Glass" {{ in_array("Glass", $servicesArr) ? "checked" : null }}>
                                         <label class="form-check-label" for="service4"> Glass</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service5" name="services[]" value="Plastic" {{ in_array("Plastic", $servicesArr) ? "checked" : null }}>
+                                        <label class="form-check-label" for="service5"> Plastic</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service6" name="services[]" value="Electronics (E-Waste)" {{ in_array("Electronics (E-Waste)", $servicesArr) ? "checked" : null }}>
+                                        <label class="form-check-label" for="service6"> Electronics (E-Waste)</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service7" name="services[]" value="Cardboard" {{ in_array("Cardboard", $servicesArr) ? "checked" : null }}>
+                                        <label class="form-check-label" for="service7"> Cardboard</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service9" name="services[]" value="Batteries" {{ in_array("Batteries", $servicesArr) ? "checked" : null }}>
+                                        <label class="form-check-label" for="service9"> Batteries</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service10" name="services[]" value="Tires" {{ in_array("Tires", $servicesArr) ? "checked" : null }}>
+                                        <label class="form-check-label" for="service10"> Tires</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service11" name="services[]" value="Used Cooking Oil" {{ in_array("Used Cooking Oil", $servicesArr) ? "checked" : null }}>
+                                        <label class="form-check-label" for="service11"> Used Cooking Oil</label>
                                     </div>
 
                                     @error("services")
@@ -91,7 +121,7 @@
                                     @enderror
                                 </div>
 
-    
+
 
                                 <!-- Branch Address -->
                                 <div class="mb-3">

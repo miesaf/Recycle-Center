@@ -5,7 +5,7 @@
     <div class="app-content"> <!--begin::Container-->
         <div class="container-lg"> <!--begin::Row-->
             <div class="row"> <!--begin::Col-->
-                <div class="p-3 mb-4 mt-4 bg-body-tertiery border rounded-3">
+                <div class="p-3 mb-4 mt-4 bg-success-subtle border rounded-3">
                     <div class="container-fluid py-5">
                         <h1 class="display-5 fw-bold">What is Recycling?</h1>
 

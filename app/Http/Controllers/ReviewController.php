@@ -180,4 +180,12 @@ class ReviewController extends Controller
 
         return redirect()->route("review.index");
     }
+
+    public function getReviews(Request $request, string $id) {
+        $reviews = Review::where('recycling_center', '=', $id)
+                            ->with('centerInfo', 'userInfo')
+                            ->orderBy('created_at', 'DESC')
+                            ->get();
+        return response()->json($reviews);
+    }
 }

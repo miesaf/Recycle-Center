@@ -24,23 +24,41 @@
         <div class="card">
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
-                <form action="{{ route('login') }}" method="POST">
+                <form action="{{ route('login') }}" method="POST" class="needs-validation {{ $errors->any() ? 'was-validated' : '' }}" novalidate>
                     @csrf
 
-                    <div class="input-group mb-3"> <input type="email" class="form-control" name="email" value="{{ old('email') }}" placeholder="Email">
+                    <div class="input-group mb-3"> <input type="email" class="form-control" name="email" value="{{ old('email') }}" placeholder="Email" required>
                         <div class="input-group-text"> <span class="bi bi-envelope"></span> </div>
+                        @error("email")
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
                     </div>
-                    <div class="input-group mb-3"> <input type="password" class="form-control" name="password" placeholder="Password" value="{{ old('password') }}">
+                    <div class="input-group mb-3"> <input type="password" class="form-control" name="password" placeholder="Password" value="{{ old('password') }}" required>
                         <div class="input-group-text"> <span class="bi bi-lock-fill"></span> </div>
+                        @error("password")
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
                     </div> <!--begin::Row-->
                     <div class="row">
+                        <div class="col-8">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="1" id="remember" name="remember">
+                                <label class="form-check-label" for="remember">
+                                    Remember Me
+                                </label>
+                            </div>
+                        </div> <!-- /.col -->
                         <div class="col-4">
                             <div class="d-grid gap-2"> <button type="submit" class="btn btn-primary">Sign In</button> </div>
                         </div> <!-- /.col -->
                     </div> <!--end::Row-->
                 </form>
 
-                <div class="social-auth-links text-center mb-3">
+                <div class="social-auth-links text-center mb-3 d-grid gap-2">
                     <p>- OR -</p>
                     <a href="{{ route('auth.google') }}" class="btn btn-block btn-danger">
                         <i class="fab fa-google-plus mr-2"></i> Sign in using Google
@@ -48,10 +66,10 @@
                 </div>
                 <!-- /.social-auth-links -->
 
-                <br/>
-
                 @if (Route::has('password.request'))
-                <p class="mb-1"> <a href="{{ route('password.request') }}">I forgot my password</a> </p>
+                <p class="mb-0">
+                    <a href="{{ route('password.request') }}">I forgot my password</a>
+                </p>
                 @endif
 
                 <p class="mb-0">

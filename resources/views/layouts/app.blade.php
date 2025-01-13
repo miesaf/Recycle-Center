@@ -21,7 +21,7 @@
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary"> <!--begin::App Wrapper-->
     <div class="app-wrapper"> <!--begin::Header-->
-        <nav class="app-header navbar navbar-expand bg-body"> <!--begin::Container-->
+        <nav class="app-header navbar navbar-expand bg-success" data-bs-theme="dark"> <!--begin::Container-->
             <div class="container-fluid"> <!--begin::Start Navbar Links-->
                 <ul class="navbar-nav">
                     <li class="nav-item"> <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button"> <i class="bi bi-list"></i> </a> </li>
@@ -31,16 +31,16 @@
                     <li class="nav-item"> <a class="nav-link" href="#" data-lte-toggle="fullscreen"> <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i> <i data-lte-icon="minimize" class="bi bi-fullscreen-exit" style="display: none;"></i> </a> </li> <!--end::Fullscreen Toggle--> <!--begin::User Menu Dropdown-->
                     <li class="nav-item dropdown user-menu"> <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> <img src="{{ asset("assets/img/user2-160x160.jpg") }}" class="user-image rounded-circle shadow" alt="User Image"> <span class="d-none d-md-inline">{{ auth()->user()->name }}</span> </a>
                         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end"> <!--begin::User Image-->
-                            <li class="user-header text-bg-primary"> <img src="{{ asset("assets/img/user2-160x160.jpg") }}" class="rounded-circle shadow" alt="User Image">
+                            <li class="user-header text-bg-success"> <img src="{{ asset("assets/img/user2-160x160.jpg") }}" class="rounded-circle shadow" alt="User Image">
                                 <p>
                                     {{ auth()->user()->name }}
                                     <small>Member since {{ auth()->user()->created_at->format('d M Y') }}</small>
                                 </p>
                             </li> <!--end::User Image--> <!--begin::Menu Footer-->
-                            <li class="user-footer">
+                            <li class="user-footer bg-white">
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <a href="{{ route("logout") }}" class="btn btn-default btn-flat float-end" onclick="event.preventDefault(); this.closest('form').submit();">Sign out</a>
+                                    <a href="{{ route("logout") }}" class="btn btn-danger btn-flat float-end" onclick="event.preventDefault(); this.closest('form').submit();">Sign out</a>
                                 </form>
                             </li> <!--end::Menu Footer-->
                         </ul>
@@ -53,7 +53,7 @@
 
         @yield('body')
 
-        <footer class="app-footer"> <!--begin::To the end-->
+        <footer class="app-footer bg-success text-white" data-bs-theme="dark"> <!--begin::To the end-->
             <div class="float-end d-none d-sm-inline">Anything you want</div> <!--end::To the end--> <!--begin::Copyright--> <strong>
                 Copyright &copy; 2024&nbsp;
                 <a href="https://adminlte.io" class="text-decoration-none">{{ env("APP_NAME") }}</a>.

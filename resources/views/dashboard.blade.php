@@ -56,7 +56,7 @@
             @if(auth()->user()->is_center)
             <div class="row">
                 <div class="col">
-                    <div class="card card-primary card-outline">
+                    <div class="card card-success bg-success-subtle">
                         <div class="card-header">
                             <h3 class="card-title">List of Recycle Centers</h3>
                         </div>
