@@ -72,13 +72,43 @@
                                     </div>
 
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="service3" name="services[]" value="Fabric">
-                                        <label class="form-check-label" for="service3"> Fabric</label>
+                                        <input class="form-check-input" type="checkbox" id="service3" name="services[]" value="Textiles (Clothing and Fabric)">
+                                        <label class="form-check-label" for="service3"> Textiles (Clothing and Fabric)</label>
                                     </div>
 
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="service4" name="services[]" value="Glass">
                                         <label class="form-check-label" for="service4"> Glass</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service5" name="services[]" value="Plastic">
+                                        <label class="form-check-label" for="service5"> Plastic</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service6" name="services[]" value="Electronics (E-Waste)">
+                                        <label class="form-check-label" for="service6"> Electronics (E-Waste)</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service7" name="services[]" value="Cardboard">
+                                        <label class="form-check-label" for="service7"> Cardboard</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service9" name="services[]" value="Batteries">
+                                        <label class="form-check-label" for="service9"> Batteries</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service10" name="services[]" value="Tires">
+                                        <label class="form-check-label" for="service10"> Tires</label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="service11" name="services[]" value="Used Cooking Oil">
+                                        <label class="form-check-label" for="service11"> Used Cooking Oil</label>
                                     </div>
 
                                     @error("services")

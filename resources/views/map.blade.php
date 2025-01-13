@@ -58,12 +58,36 @@
                                         <label class="form-check-label">Metal</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="f[]" value="Fabric">
-                                        <label class="form-check-label">Fabric</label>
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Textiles (Clothing and Fabric)">
+                                        <label class="form-check-label">Textiles (Clothing and Fabric)</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="f[]" value="Glass">
                                         <label class="form-check-label">Glass</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Plastic">
+                                        <label class="form-check-label">Plastic</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Electronics (E-Waste)">
+                                        <label class="form-check-label">Electronics (E-Waste)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Cardboard">
+                                        <label class="form-check-label">Cardboard</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Batteries">
+                                        <label class="form-check-label">Batteries</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Tires">
+                                        <label class="form-check-label">Tires</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="f[]" value="Used Cooking Oil">
+                                        <label class="form-check-label">Used Cooking Oil</label>
                                     </div>
                                 </div>
                             </form>
