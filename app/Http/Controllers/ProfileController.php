@@ -8,11 +8,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\User;
 use App\Models\Log;
 use Session;
 
 class ProfileController extends Controller
 {
+    public function show(string $id)
+    {
+        $user = User::withTrashed()->find($id);
+        return view("profile.show")->with('user', $user);
+    }
+
     /**
      * Display the user's profile form.
      */

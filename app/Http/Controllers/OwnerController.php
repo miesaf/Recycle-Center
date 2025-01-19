@@ -43,7 +43,7 @@ class OwnerController extends Controller
      */
     public function show(string $id)
     {
-        $owner = User::where("id", "=", $id)->first();
+        $owner = User::withTrashed()->find($id);
         return view("owner.show")->with('owner', $owner);
     }
 
@@ -52,7 +52,7 @@ class OwnerController extends Controller
      */
     public function edit(string $id)
     {
-        $owner = User::where("id", "=", $id)->first();
+        $owner = User::find($id);
         return view("owner.edit")->with('owner', $owner);
     }
 

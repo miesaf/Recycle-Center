@@ -73,7 +73,7 @@ class AdminController extends Controller
      */
     public function show(string $id)
     {
-        $admin = User::where("id", "=", $id)->first();
+        $admin = User::withTrashed()->where("id", "=", $id)->first();
         return view("admin.show")->with('admin', $admin);
     }
 

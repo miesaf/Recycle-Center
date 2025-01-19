@@ -51,7 +51,7 @@ class RegisteredUserController extends Controller
             'module' => 'Owners',
             'model_id' => $user->id,
             'action' => 'create',
-            'user' => Auth::user() ? Auth::user()->id : null,
+            'user' => $user->id,
         ]);
 
         event(new Registered($user));
@@ -87,7 +87,7 @@ class RegisteredUserController extends Controller
             'module' => 'Contributor',
             'model_id' => $user->id,
             'action' => 'create',
-            'user' => Auth::user() ? Auth::user()->id : null,
+            'user' => $user->id,
         ]);
 
         event(new Registered($user));

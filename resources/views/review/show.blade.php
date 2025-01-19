@@ -32,7 +32,7 @@
                             <!-- Premise -->
                             <div class="mb-3">
                                 <label for="recycling_center" class="form-label">Recycle Center</label>
-                                <input type="text" class="form-control @error('recycling_center') is-invalid @enderror" id="recycling_center" name="recycling_center" value="{{ $review->centerInfo->name }}" disabled>
+                                <input type="text" class="form-control @error('recycling_center') is-invalid @enderror" id="recycling_center" name="recycling_center" value="{{ ($review->centerInfo)->name }}" disabled>
                             </div>
 
                             <!-- Rating -->

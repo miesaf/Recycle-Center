@@ -51,7 +51,7 @@ class DashboardController extends Controller
 
             $latestReviews = Review::orderBy('created_at', 'DESC')
                                         ->with('centerInfo')
-                                        ->limit(3)
+                                        ->limit(5)
                                         ->get();
 
             $latestActivities = Log::with('userInfo')

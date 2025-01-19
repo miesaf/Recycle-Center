@@ -92,7 +92,12 @@ class ReviewController extends Controller
      */
     public function show(string $id)
     {
-        $review = Review::with('centerInfo')->find($id);
+        $review = Review::withTrashed()
+                            ->with(['centerInfo' => function ($query) {
+                                $query->withTrashed();
+                            }])
+                            ->find($id);
+
         return view("review.show")->with('review', $review);
     }
 

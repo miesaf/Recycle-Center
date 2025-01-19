@@ -131,7 +131,12 @@ class RecyclingCenterController extends Controller
      */
     public function show($id)
     {
-        $recyclingCenter = RecyclingCenter::with('ownerInfo')->find($id);
+        $recyclingCenter = RecyclingCenter::withTrashed()
+                            ->with(['ownerInfo' => function ($query) {
+                                $query->withTrashed();
+                            }])
+                            ->find($id);
+
         return view("center.show")->with('recyclingCenter', $recyclingCenter);
     }
 
