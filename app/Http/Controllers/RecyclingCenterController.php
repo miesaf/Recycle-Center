@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\RecyclingCenter;
 use App\Models\Review;
 use App\Models\User;
+use App\Models\Log;
 use Illuminate\Http\Request;
 use Session;
 use Auth;
@@ -16,7 +17,7 @@ class RecyclingCenterController extends Controller
      */
     public function index()
     {
-        if(Auth::user()->is_admin) {
+        if (Auth::user()->is_admin) {
             $recyclingCenters = RecyclingCenter::with('ownerInfo')->withAvg('reviews', 'rating')->get();
         } else {
             $recyclingCenters = RecyclingCenter::where("owner", "=", Auth::user()->id)->withAvg('reviews', 'rating')->get();
@@ -31,7 +32,6 @@ class RecyclingCenterController extends Controller
         });
 
         return view("center.index")->with('recyclingCenters', $recyclingCenters);
-
     }
 
     /**
@@ -48,7 +48,7 @@ class RecyclingCenterController extends Controller
      */
     public function store(Request $request)
     {
-        if(Auth::user()->is_admin) {
+        if (Auth::user()->is_admin) {
             $validated = $request->validate([
                 'name' => 'required|max:255',
                 'phone_no' => 'required|max:20',
@@ -86,7 +86,7 @@ class RecyclingCenterController extends Controller
         $services = substr($services, 0, -2) . "] }";
 
         // (sizeof($request->services) > 0) ? null : ($services = "");
-        if(sizeof($request->services) < 1) {
+        if (sizeof($request->services) < 1) {
             return redirect()->back();
         }
 
@@ -95,7 +95,7 @@ class RecyclingCenterController extends Controller
         $recyclingCenter->address = $request->address;
         $recyclingCenter->is_dropbox = $request->is_dropbox;
 
-        if($request->is_dropbox) {
+        if ($request->is_dropbox) {
             $recyclingCenter->operation_hour = "-";
         } else {
             $recyclingCenter->operation_hour = $request->operation_hour;
@@ -104,14 +104,21 @@ class RecyclingCenterController extends Controller
         $recyclingCenter->latitude = $request->latitude;
         $recyclingCenter->longitude = $request->longitude;
 
-        if(Auth::user()->is_admin) {
+        if (Auth::user()->is_admin) {
             $recyclingCenter->owner = $request->owner;
         } else {
             $recyclingCenter->owner = Auth::user()->id;
         }
 
-        if($recyclingCenter->save()) {
+        if ($recyclingCenter->save()) {
             Session::flash('success', 'Recycle center created!');
+
+            Log::create([
+                'module' => 'RecyclingCenter',
+                'model_id' => $recyclingCenter->id,
+                'action' => 'create',
+                'user' => Auth::user() ? Auth::user()->id : null,
+            ]);
         } else {
             Session::flash('danger', 'Failed to create recycle center!');
         }
@@ -124,7 +131,12 @@ class RecyclingCenterController extends Controller
      */
     public function show($id)
     {
-        $recyclingCenter = RecyclingCenter::find($id);
+        $recyclingCenter = RecyclingCenter::withTrashed()
+                            ->with(['ownerInfo' => function ($query) {
+                                $query->withTrashed();
+                            }])
+                            ->find($id);
+
         return view("center.show")->with('recyclingCenter', $recyclingCenter);
     }
 
@@ -143,7 +155,7 @@ class RecyclingCenterController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(Auth::user()->is_admin) {
+        if (Auth::user()->is_admin) {
             $validated = $request->validate([
                 'name' => 'required|max:255',
                 'phone_no' => 'required|max:20',
@@ -156,7 +168,7 @@ class RecyclingCenterController extends Controller
                 'longitude' => 'required|numeric|between:-180,180', // Longitude must be between -180 and 180
             ]);
         } else {
-            if(Auth::user()->is_admin) {
+            if (Auth::user()->is_admin) {
                 $validated = $request->validate([
                     'name' => 'required|max:255',
                     'phone_no' => 'required|max:20',
@@ -183,7 +195,7 @@ class RecyclingCenterController extends Controller
         $services = substr($services, 0, -2) . "] }";
 
         // (sizeof($request->services) > 0) ? null : ($services = "");
-        if(sizeof($request->services) < 1) {
+        if (sizeof($request->services) < 1) {
             return redirect()->back();
         }
 
@@ -192,7 +204,7 @@ class RecyclingCenterController extends Controller
         $recyclingCenter->address = $request->address;
         $recyclingCenter->is_dropbox = $request->is_dropbox;
 
-        if($request->is_dropbox) {
+        if ($request->is_dropbox) {
             $recyclingCenter->operation_hour = "-";
         } else {
             $recyclingCenter->operation_hour = $request->operation_hour;
@@ -201,14 +213,21 @@ class RecyclingCenterController extends Controller
         $recyclingCenter->latitude = $request->latitude;
         $recyclingCenter->longitude = $request->longitude;
 
-        if(Auth::user()->is_admin) {
+        if (Auth::user()->is_admin) {
             $recyclingCenter->owner = $request->owner;
         } else {
             $recyclingCenter->owner = Auth::user()->id;
         }
 
-        if($recyclingCenter->update()) {
+        if ($recyclingCenter->update()) {
             Session::flash('success', 'Recycle center updated!');
+
+            Log::create([
+                'module' => 'RecyclingCenter',
+                'model_id' => $recyclingCenter->id,
+                'action' => 'update',
+                'user' => Auth::user() ? Auth::user()->id : null,
+            ]);
         } else {
             Session::flash('danger', 'Failed to update recycle center!');
         }
@@ -221,11 +240,20 @@ class RecyclingCenterController extends Controller
      */
     public function destroy($id)
     {
-        if(RecyclingCenter::find($id)->delete()) {
+        $recyclingCenter = RecyclingCenter::find($id);
+
+        if ($recyclingCenter->delete()) {
             // Delete all reviews for the recycling center
             Review::where('recycling_center', '=', $id)->delete();
 
             Session::flash('success', 'Recycle center deleted!');
+
+            Log::create([
+                'module' => 'RecyclingCenter',
+                'model_id' => $recyclingCenter->id,
+                'action' => 'delete',
+                'user' => Auth::user() ? Auth::user()->id : null,
+            ]);
         } else {
             Session::flash('danger', 'Failed to delete recycle center!');
         }
@@ -238,8 +266,15 @@ class RecyclingCenterController extends Controller
         $recyclingCenter = RecyclingCenter::find($id);
         $recyclingCenter->is_verified = true;
 
-        if($recyclingCenter->update()) {
+        if ($recyclingCenter->update()) {
             Session::flash('success', 'Recycle center verified!');
+
+            Log::create([
+                'module' => 'RecyclingCenter',
+                'model_id' => $recyclingCenter->id,
+                'action' => 'verify',
+                'user' => Auth::user() ? Auth::user()->id : null,
+            ]);
         } else {
             Session::flash('danger', 'Failed to verify recycle center!');
         }
@@ -249,7 +284,7 @@ class RecyclingCenterController extends Controller
 
     public function getLocations()
     {
-        return response()->json(RecyclingCenter::all());
+        return response()->json(RecyclingCenter::where("is_verified", "=", true)->get());
     }
 
     public function search(Request $request)
@@ -261,8 +296,9 @@ class RecyclingCenterController extends Controller
             $filters = $request->f; // Array of materials to filter by
 
             $query->where(function ($subQuery) use ($request) {
-                $subQuery->where('name', 'LIKE', "%{$request->q}%")
-                        ->orWhere('address', 'LIKE', "%{$request->q}%");
+                $subQuery->where("is_verified", "=", true)
+                    ->where('name', 'LIKE', "%{$request->q}%")
+                    ->orWhere('address', 'LIKE', "%{$request->q}%");
             });
 
             // Add where clauses to check if all values exist in the `services` JSON field
@@ -273,12 +309,14 @@ class RecyclingCenterController extends Controller
             $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
         } elseif ($request->has('q')) {
             // 2. If `q` is defined, search by name or address and sort by rating.
-            $query->where('name', 'LIKE', "%{$request->q}%")
+            $query->where("is_verified", "=", true)
+                ->where('name', 'LIKE', "%{$request->q}%")
                 ->orWhere('address', 'LIKE', "%{$request->q}%");
             $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
         } elseif ($request->has('r')) {
             // 3. If `r` is defined, return the top 10 centers by rating.
-            $query->withAvg('reviews', 'rating')
+            $query->where("is_verified", "=", true)
+                ->withAvg('reviews', 'rating')
                 ->orderBy('reviews_avg_rating', 'DESC')
                 ->limit(10);
         } elseif ($request->has('f')) {
@@ -289,7 +327,7 @@ class RecyclingCenterController extends Controller
                 $query->whereRaw("JSON_CONTAINS(services, '\"$filter\"', '$.services')");
             }
 
-            $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
+            $query->where("is_verified", "=", true)->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
         } else {
             // 5. If no parameters are defined, display centers based on location and sort by rating.
             if ($request->latitude && $request->longitude) {
@@ -298,13 +336,15 @@ class RecyclingCenterController extends Controller
                 $radius = $request->radius ?? (env('SEARCH_RADIUS') / 1000); // Optional radius (default 3 km)
 
                 $query->selectRaw('*, (6371 * ACOS(COS(RADIANS(?)) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS(?)) + SIN(RADIANS(?)) * SIN(RADIANS(latitude)))) AS distance', [
-                    $latitude, $longitude, $latitude
+                    $latitude,
+                    $longitude,
+                    $latitude
                 ])
-                ->having('distance', '<=', $radius)
-                ->orderBy('distance', 'ASC');
+                    ->having('distance', '<=', $radius)
+                    ->orderBy('distance', 'ASC');
             }
 
-            $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
+            $query->where("is_verified", "=", true)->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
         }
 
         // Ensure all results are limited to a maximum of 15.

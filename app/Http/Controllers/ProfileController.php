@@ -8,10 +8,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\User;
+use App\Models\Log;
 use Session;
 
 class ProfileController extends Controller
 {
+    public function show(string $id)
+    {
+        $user = User::withTrashed()->find($id);
+        return view("profile.show")->with('user', $user);
+    }
+
     /**
      * Display the user's profile form.
      */
@@ -33,8 +41,15 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
-        if($request->user()->save()) {
+        if ($request->user()->save()) {
             Session::flash('success', 'Profile updated!');
+
+            Log::create([
+                'module' => 'Users',
+                'model_id' => Auth::user()->id,
+                'action' => 'update',
+                'user' => Auth::user() ? Auth::user()->id : null,
+            ]);
         } else {
             Session::flash('danger', 'Failed to update profile!');
         }
@@ -56,6 +71,13 @@ class ProfileController extends Controller
         Auth::logout();
 
         $user->delete();
+
+        Log::create([
+            'module' => 'Users',
+            'model_id' => $user->id,
+            'action' => 'delete',
+            'user' => Auth::user() ? Auth::user()->id : null,
+        ]);
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

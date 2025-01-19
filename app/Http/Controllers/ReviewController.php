@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\RecyclingCenter;
 use App\Models\Review;
 use App\Models\User;
+use App\Models\Log;
 use Illuminate\Http\Request;
 use Session;
 use Auth;
@@ -18,19 +19,19 @@ class ReviewController extends Controller
     {
         $userId = Auth::user()->id;
 
-        if(Auth::user()->is_admin) {
+        if (Auth::user()->is_admin) {
             $recyclingCenters = RecyclingCenter::with('reviews')->get();
-        } elseif(Auth::user()->is_center) {
+        } elseif (Auth::user()->is_center) {
             $recyclingCenters = RecyclingCenter::where("owner", "=", $userId)->with('reviews')->get();
         } else {
             // Non-admin sees only centers with reviews by the user.
             $recyclingCenters = RecyclingCenter::whereHas('reviews', function ($query) use ($userId) {
                 $query->where('user', $userId); // Check if the review exists by the user.
             })
-            ->with(['reviews' => function ($query) use ($userId) {
-                $query->where('user', $userId); // Load only the user's reviews.
-            }])
-            ->get();
+                ->with(['reviews' => function ($query) use ($userId) {
+                    $query->where('user', $userId); // Load only the user's reviews.
+                }])
+                ->get();
         }
 
         return view("review.index")->with('recyclingCenters', $recyclingCenters);
@@ -47,8 +48,8 @@ class ReviewController extends Controller
         $recyclingCenters = RecyclingCenter::whereDoesntHave('reviews', function ($query) use ($userId) {
             $query->where('user', $userId); // Check for reviews by the authenticated user.
         })
-        ->with('ownerInfo') // Include owner info if needed.
-        ->get();
+            ->with('ownerInfo') // Include owner info if needed.
+            ->get();
 
         return view("review.create")->with('recyclingCenters', $recyclingCenters);
     }
@@ -70,8 +71,15 @@ class ReviewController extends Controller
         $review->rating = $request->rating;
         $review->review = $request->review;
 
-        if($review->save()) {
+        if ($review->save()) {
             Session::flash('success', 'Recycle center review created!');
+
+            Log::create([
+                'module' => 'Reviews',
+                'model_id' => $review->id,
+                'action' => 'create',
+                'user' => Auth::user() ? Auth::user()->id : null,
+            ]);
         } else {
             Session::flash('danger', 'Failed to create recycle center review!');
         }
@@ -84,7 +92,13 @@ class ReviewController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $review = Review::withTrashed()
+                            ->with(['centerInfo' => function ($query) {
+                                $query->withTrashed();
+                            }])
+                            ->find($id);
+
+        return view("review.show")->with('review', $review);
     }
 
     /**
@@ -110,8 +124,15 @@ class ReviewController extends Controller
         $review->rating = $request->rating;
         $review->review = $request->review;
 
-        if($review->update()) {
+        if ($review->update()) {
             Session::flash('success', 'Recycle center review updated!');
+
+            Log::create([
+                'module' => 'Reviews',
+                'model_id' => $review->id,
+                'action' => 'update',
+                'user' => Auth::user() ? Auth::user()->id : null,
+            ]);
         } else {
             Session::flash('danger', 'Failed to update recycle center review!');
         }
@@ -124,8 +145,17 @@ class ReviewController extends Controller
      */
     public function destroy(string $id)
     {
-        if(Review::find($id)->delete()) {
+        $review = Review::find($id);
+
+        if ($review->delete()) {
             Session::flash('success', 'Recycle center review deleted!');
+
+            Log::create([
+                'module' => 'Reviews',
+                'model_id' => $review->id,
+                'action' => 'delete',
+                'user' => Auth::user() ? Auth::user()->id : null,
+            ]);
         } else {
             Session::flash('danger', 'Failed to delete recycle center review!');
         }
@@ -142,11 +172,11 @@ class ReviewController extends Controller
             $recyclingCenters = RecyclingCenter::whereDoesntHave('reviews', function ($query) use ($userId) {
                 $query->where('user', $userId); // Match reviews by the specific user
             })
-            ->where("id", "=", $id) // Only current recycling center
-            ->with('ownerInfo') // Include owner info if needed
-            ->first();
+                ->where("id", "=", $id) // Only current recycling center
+                ->with('ownerInfo') // Include owner info if needed
+                ->first();
 
-            if($recyclingCenters) {
+            if ($recyclingCenters) {
                 // Return or process the $recyclingCenters as required
                 return view('review.fast', compact('recyclingCenters'));
             } else {
@@ -172,8 +202,15 @@ class ReviewController extends Controller
         $review->rating = $request->rating;
         $review->review = $request->review;
 
-        if($review->save()) {
+        if ($review->save()) {
             Session::flash('success', 'Recycle center review created!');
+
+            Log::create([
+                'module' => 'Reviews',
+                'model_id' => $review->id,
+                'action' => 'create',
+                'user' => Auth::user() ? Auth::user()->id : null,
+            ]);
         } else {
             Session::flash('danger', 'Failed to create recycle center review!');
         }
@@ -181,11 +218,12 @@ class ReviewController extends Controller
         return redirect()->route("review.index");
     }
 
-    public function getReviews(Request $request, string $id) {
+    public function getReviews(Request $request, string $id)
+    {
         $reviews = Review::where('recycling_center', '=', $id)
-                            ->with('centerInfo', 'userInfo')
-                            ->orderBy('created_at', 'DESC')
-                            ->get();
+            ->with('centerInfo', 'userInfo')
+            ->orderBy('created_at', 'DESC')
+            ->get();
         return response()->json($reviews);
     }
 }

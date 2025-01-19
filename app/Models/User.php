@@ -62,4 +62,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Review::class, 'owner');
     }
+
+    public function logs(): HasMany
+    {
+        return $this->hasMany(Log::class, 'user');
+    }
 }

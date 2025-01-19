@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use App\Models\User;
+use App\Models\Log;
 
 class NewPasswordController extends Controller
 {
@@ -49,6 +51,14 @@ class NewPasswordController extends Controller
                 event(new PasswordReset($user));
             }
         );
+
+        $getUserId = User::where('email', $request->email)->value('id');
+        Log::create([
+            'module' => 'Users',
+            'model_id' => $getUserId,
+            'action' => 'reset.password',
+            'user' => $getUserId,
+        ]);
 
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
