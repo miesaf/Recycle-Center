@@ -125,8 +125,82 @@
                     </div> <!-- /.card -->
                 </div>
             </div> <!-- /.row -->
+            @else
+            <div class="row">
+                <div class="col-4">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h3 class="card-title">Recycle Center Ratings</h3>
+                            <div class="card-tools"> <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse"> <i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i data-lte-icon="collapse" class="bi bi-dash-lg"></i> </button> <button type="button" class="btn btn-tool" data-lte-toggle="card-remove"> <i class="bi bi-x-lg"></i> </button> </div>
+                        </div> <!-- /.card-header -->
+                        <div class="card-body"> <!--begin::Row-->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div id="pie-chart"></div>
+                                </div> <!-- /.col -->
+                            </div> <!--end::Row-->
+                        </div> <!-- /.card-body -->
+                        <div class="card-footer p-0">
+                            <ul class="nav nav-pills flex-column">
+                                @foreach ($latestReviews as $review)
+
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        {{ $review->centerInfo->name }}
+                                        <span class="float-end text-primary">
+                                            @for ($i = 0; $i < $review->rating; $i++)
+                                            ⭐
+                                            @endfor
+                                            ({{ $review->created_at->diffForHumans() }})
+                                        </span>
+                                    </a>
+                                </li>
+                                @endforeach
+                            </ul>
+                        </div> <!-- /.footer -->
+                    </div> <!-- /.card -->
+                </div> <!-- /.col -->
+            </div> <!-- /.row -->
             @endif
         </div> <!--end::Container-->
     </div> <!--end::App Content-->
 </main> <!--end::App Main--> <!--begin::Footer-->
+
+<!-- apexcharts -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js" integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8=" crossorigin="anonymous"></script>
+
+<script>
+    // Pass PHP data into JavaScript
+    const totByStars = @json($totByStars);
+
+    // Extract series and labels for the chart
+    const series = totByStars.map(item => item.count); // Extract counts
+    const labels = totByStars.map(item => `${item.rating} stars`); // Extract ratings
+
+    const pie_chart_options = {
+        series: series, // Use dynamic series data
+        chart: {
+            type: "donut",
+        },
+        labels: labels, // Use dynamic labels
+        dataLabels: {
+            enabled: false,
+        },
+        colors: [
+            "#0d6efd",
+            "#20c997",
+            "#ffc107",
+            "#d63384",
+            "#6f42c1",
+            "#adb5bd",
+        ], // You can modify or expand this color set to match the number of ratings
+    };
+
+    const pie_chart = new ApexCharts(
+        document.querySelector("#pie-chart"),
+        pie_chart_options,
+    );
+
+    pie_chart.render();
+</script>
 @endsection('body')
