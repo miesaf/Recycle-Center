@@ -151,7 +151,7 @@
                                             @for ($i = 0; $i < $review->rating; $i++)
                                             ⭐
                                             @endfor
-                                            ({{ $review->created_at->diffForHumans() }})
+                                            <sup>({{ $review->created_at->diffForHumans() }})</sup>
                                         </span>
                                     </a>
                                 </li>
