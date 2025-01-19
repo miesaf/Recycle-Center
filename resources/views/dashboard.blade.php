@@ -125,8 +125,48 @@
                     </div> <!-- /.card -->
                 </div>
             </div> <!-- /.row -->
-            @else
+            @elseif(auth()->user()->is_admin)
             <div class="row">
+                <div class="col-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Latest Activity</h3>
+                            <div class="card-tools"> <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse"> <i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i data-lte-icon="collapse" class="bi bi-dash-lg"></i> </button> <button type="button" class="btn btn-tool" data-lte-toggle="card-remove"> <i class="bi bi-x-lg"></i> </button> </div>
+                        </div> <!-- /.card-header -->
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table m-0">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Module</th>
+                                            <th>Resource ID</th>
+                                            <th>Action</th>
+                                            {{-- <th>By</th> --}}
+                                            <th>Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($latestActivities as $key => $activity)
+                                        <tr>
+                                            <td>{{ $key + 1 }}</td>
+                                            <td>{{ $activity->module }}</td>
+                                            <td>{{ $activity->model_id ? $activity->model_id : '-' }}</td>
+                                            <td>{{ $activity->action }}</td>
+                                            {{-- <td>{{ $activity->user_info ? $activity->user_info->name : '-' }}</td> --}}
+                                            <td>{{ $activity->created_at->diffForHumans() }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div> <!-- /.table-responsive -->
+                        </div> <!-- /.card-body -->
+                        <div class="card-footer clearfix">
+                            <!-- Nothing -->
+                        </div> <!-- /.card-footer -->
+                    </div> <!-- /.card -->
+                </div>
+
                 <div class="col-4">
                     <div class="card mb-4">
                         <div class="card-header">
