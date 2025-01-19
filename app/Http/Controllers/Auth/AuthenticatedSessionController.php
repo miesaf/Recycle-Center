@@ -29,7 +29,7 @@ class AuthenticatedSessionController extends Controller
         $getUserId = User::where('email', $request->email)->value('id');
         Log::create([
             'module' => 'Users',
-            'model_id' => null,
+            'model_id' => $getUserId,
             'action' => 'login',
             'user' => $getUserId
         ]);

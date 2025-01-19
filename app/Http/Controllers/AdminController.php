@@ -7,7 +7,9 @@ use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\User;
+use App\Models\Log;
 use Session;
+use Auth;
 
 class AdminController extends Controller
 {
@@ -36,12 +38,12 @@ class AdminController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'phone_no' => ['required', 'string', 'max:20'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
+        $admin = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone_no' => $request->phone_no,
@@ -50,8 +52,15 @@ class AdminController extends Controller
             'is_verified' => false,
         ]);
 
-        if($user) {
+        if ($admin) {
             Session::flash('success', 'Admin created!');
+
+            Log::create([
+                'module' => 'Admins',
+                'model_id' => $admin->id,
+                'action' => 'create',
+                'user' => Auth::user() ? Auth::user()->id : null,
+            ]);
         } else {
             Session::flash('danger', 'Failed to create admin!');
         }
@@ -64,7 +73,8 @@ class AdminController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $admin = User::where("id", "=", $id)->first();
+        return view("admin.show")->with('admin', $admin);
     }
 
     /**
@@ -92,8 +102,15 @@ class AdminController extends Controller
         $admin->email = $request->email;
         $admin->phone_no = $request->phone_no;
 
-        if($admin->update()) {
+        if ($admin->update()) {
             Session::flash('success', 'Admin updated!');
+
+            Log::create([
+                'module' => 'Admins',
+                'model_id' => $admin->id,
+                'action' => 'update',
+                'user' => Auth::user() ? Auth::user()->id : null,
+            ]);
         } else {
             Session::flash('danger', 'Failed to update admin!');
         }
@@ -106,8 +123,17 @@ class AdminController extends Controller
      */
     public function destroy(string $id)
     {
-        if(User::find($id)->delete()) {
+        $admin = User::find($id);
+
+        if ($admin->delete()) {
             Session::flash('success', 'Admin deleted!');
+
+            Log::create([
+                'module' => 'Admins',
+                'model_id' => $admin->id,
+                'action' => 'delete',
+                'user' => Auth::user() ? Auth::user()->id : null,
+            ]);
         } else {
             Session::flash('danger', 'Failed to delete admin!');
         }

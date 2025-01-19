@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Log;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -31,7 +32,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'phone_no' => ['required', 'string', 'max:20'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
@@ -44,6 +45,13 @@ class RegisteredUserController extends Controller
             'is_admin' => false,
             'is_center' => true,
             'is_verified' => false,
+        ]);
+
+        Log::create([
+            'module' => 'Owners',
+            'model_id' => $user->id,
+            'action' => 'create',
+            'user' => Auth::user() ? Auth::user()->id : null,
         ]);
 
         event(new Registered($user));
@@ -62,7 +70,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -73,6 +81,13 @@ class RegisteredUserController extends Controller
             'is_admin' => false,
             'is_center' => false,
             'is_verified' => false,
+        ]);
+
+        Log::create([
+            'module' => 'Contributor',
+            'model_id' => $user->id,
+            'action' => 'create',
+            'user' => Auth::user() ? Auth::user()->id : null,
         ]);
 
         event(new Registered($user));

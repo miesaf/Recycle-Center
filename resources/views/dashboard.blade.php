@@ -151,7 +151,50 @@
                                         <tr>
                                             <td>{{ $key + 1 }}</td>
                                             <td>{{ $activity->module }}</td>
-                                            <td>{{ $activity->model_id ? $activity->model_id : '-' }}</td>
+                                            <td>
+                                            @php
+                                                $resourceDisp = '-';
+                                                $model = null;
+
+                                                if($activity->action != "delete") {
+                                                    switch ($activity->module) {
+                                                        case 'Admins':
+                                                            $model = "admin";
+                                                            break;
+
+                                                        case 'Owners':
+                                                            $model = "owner";
+                                                            break;
+
+                                                        case 'Contributor':
+                                                        case 'Users':
+                                                            $model = "user";
+                                                            break;
+
+                                                        case 'RecyclingCenter':
+                                                            $model = "center";
+                                                            break;
+
+                                                        case 'Reviews':
+                                                            $model = "review";
+                                                            break;
+
+                                                        default:
+                                                            $model = null;
+                                                            break;
+                                                    }
+                                                }
+
+                                                if($model && $activity->model_id) {
+                                                    // $resourceDisp = $activity->model_id;
+                                                    $resourceDisp = "<a href=\"$model/$activity->model_id\" target=\"$activity->model_id\">$activity->model_id</a>";
+                                                } elseif($activity->model_id) {
+                                                    $resourceDisp = $activity->model_id;
+                                                }
+
+                                                echo $resourceDisp;
+                                            @endphp
+                                            </td>
                                             <td>{{ $activity->action }}</td>
                                             {{-- <td>{{ $activity->user_info ? $activity->user_info->name : '-' }}</td> --}}
                                             <td>{{ $activity->created_at->diffForHumans() }}</td>

@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\RecyclingCenter;
 use App\Models\Review;
+use App\Models\Log;
 use Session;
+use Auth;
 
 class OwnerController extends Controller
 {
@@ -41,7 +43,8 @@ class OwnerController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $owner = User::where("id", "=", $id)->first();
+        return view("owner.show")->with('owner', $owner);
     }
 
     /**
@@ -69,8 +72,15 @@ class OwnerController extends Controller
         $owner->email = $request->email;
         $owner->phone_no = $request->phone_no;
 
-        if($owner->update()) {
+        if ($owner->update()) {
             Session::flash('success', 'Recycle center owner updated!');
+
+            Log::create([
+                'module' => 'Owners',
+                'model_id' => $owner->id,
+                'action' => 'update',
+                'user' => Auth::user() ? Auth::user()->id : null,
+            ]);
         } else {
             Session::flash('danger', 'Failed to update recycle center owner!');
         }
@@ -100,6 +110,13 @@ class OwnerController extends Controller
             // Finally, delete the user
             if ($user->delete()) {
                 Session::flash('success', 'Recycle center owner and related data deleted!');
+
+                Log::create([
+                    'module' => 'Owners',
+                    'model_id' => $user->id,
+                    'action' => 'delete',
+                    'user' => Auth::user() ? Auth::user()->id : null,
+                ]);
             } else {
                 Session::flash('danger', 'Failed to delete recycle center owner!');
             }
@@ -115,8 +132,15 @@ class OwnerController extends Controller
         $user = User::where("id", "=", $id)->first();
         $user->is_verified = true;
 
-        if($user->update()) {
+        if ($user->update()) {
             Session::flash('success', 'Recycle center owner verified!');
+
+            Log::create([
+                'module' => 'Owners',
+                'model_id' => $user->id,
+                'action' => 'verify',
+                'user' => Auth::user() ? Auth::user()->id : null,
+            ]);
         } else {
             Session::flash('danger', 'Failed to verify recycle center owner!');
         }

@@ -47,7 +47,7 @@
                                 <!-- Email -->
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email</label>
-                                    <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ $owner->email }}" required autofocus >
+                                    <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ $owner->email }}" required>
 
                                     @error("email")
                                     <div class="form-text">
@@ -59,7 +59,7 @@
                                 <!-- Phone Number -->
                                 <div class="mb-3">
                                     <label for="phone_no" class="form-label">Phone Number</label>
-                                    <input type="text" class="form-control @error('phone_no') is-invalid @enderror" id="phone_no" name="phone_no" value="{{ $owner->phone_no }}" required autofocus >
+                                    <input type="text" class="form-control @error('phone_no') is-invalid @enderror" id="phone_no" name="phone_no" value="{{ $owner->phone_no }}" required>
 
                                     @error("phone_no")
                                     <div class="form-text">
