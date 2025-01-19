@@ -142,7 +142,7 @@
                                             <th>Module</th>
                                             <th>Resource ID</th>
                                             <th>Action</th>
-                                            {{-- <th>By</th> --}}
+                                            <th>By</th>
                                             <th>Time</th>
                                         </tr>
                                     </thead>
@@ -196,7 +196,7 @@
                                             @endphp
                                             </td>
                                             <td>{{ $activity->action }}</td>
-                                            {{-- <td>{{ $activity->user_info ? $activity->user_info->name : '-' }}</td> --}}
+                                            <td>{{ $activity->user_info ? ($activity->user_info)->name : '-' }}</td>
                                             <td>{{ $activity->created_at->diffForHumans() }}</td>
                                         </tr>
                                         @endforeach
