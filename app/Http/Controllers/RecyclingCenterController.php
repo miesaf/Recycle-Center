@@ -249,7 +249,7 @@ class RecyclingCenterController extends Controller
 
     public function getLocations()
     {
-        return response()->json(RecyclingCenter::all());
+        return response()->json(RecyclingCenter::where("is_verified", "=", true)->get());
     }
 
     public function search(Request $request)
@@ -261,7 +261,8 @@ class RecyclingCenterController extends Controller
             $filters = $request->f; // Array of materials to filter by
 
             $query->where(function ($subQuery) use ($request) {
-                $subQuery->where('name', 'LIKE', "%{$request->q}%")
+                $subQuery->where("is_verified", "=", true)
+                        ->where('name', 'LIKE', "%{$request->q}%")
                         ->orWhere('address', 'LIKE', "%{$request->q}%");
             });
 
@@ -273,12 +274,14 @@ class RecyclingCenterController extends Controller
             $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
         } elseif ($request->has('q')) {
             // 2. If `q` is defined, search by name or address and sort by rating.
-            $query->where('name', 'LIKE', "%{$request->q}%")
+            $query->where("is_verified", "=", true)
+                ->where('name', 'LIKE', "%{$request->q}%")
                 ->orWhere('address', 'LIKE', "%{$request->q}%");
             $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
         } elseif ($request->has('r')) {
             // 3. If `r` is defined, return the top 10 centers by rating.
-            $query->withAvg('reviews', 'rating')
+            $query->where("is_verified", "=", true)
+                ->withAvg('reviews', 'rating')
                 ->orderBy('reviews_avg_rating', 'DESC')
                 ->limit(10);
         } elseif ($request->has('f')) {
@@ -289,7 +292,7 @@ class RecyclingCenterController extends Controller
                 $query->whereRaw("JSON_CONTAINS(services, '\"$filter\"', '$.services')");
             }
 
-            $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
+            $query->where("is_verified", "=", true)->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
         } else {
             // 5. If no parameters are defined, display centers based on location and sort by rating.
             if ($request->latitude && $request->longitude) {
@@ -304,7 +307,7 @@ class RecyclingCenterController extends Controller
                 ->orderBy('distance', 'ASC');
             }
 
-            $query->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
+            $query->where("is_verified", "=", true)->withAvg('reviews', 'rating')->orderBy('reviews_avg_rating', 'DESC');
         }
 
         // Ensure all results are limited to a maximum of 15.
