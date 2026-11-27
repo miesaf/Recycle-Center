@@ -16,7 +16,9 @@ class ProfileController extends Controller
 {
     public function show(string $id)
     {
-        $user = User::withTrashed()->find($id);
+        // A profile page is for its own user and admins.
+        abort_unless(Auth::user()->is_admin || (int) $id === (int) Auth::id(), 403);
+        $user = User::withTrashed()->findOrFail($id);
         return view("profile.show")->with('user', $user);
     }
 

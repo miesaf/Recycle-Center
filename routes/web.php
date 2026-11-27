@@ -57,16 +57,20 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/user/{id}', [ProfileController::class, 'show'])->name('user.show');
 
+    // Admins and center owners; each center is limited to its owner (checked in the controller).
     Route::resource('center', RecyclingCenterController::class);
-    Route::resource('admin', AdminController::class);
-    Route::resource('owner', OwnerController::class);
+    // Reviews: everyone signed in writes their own; edit/delete only the author or an admin.
     Route::resource('review', ReviewController::class);
 
     Route::get('review/{id}/fast', [ReviewController::class, 'fastReview'])->name('review.fast');
     Route::post('review/{id}/fast', [ReviewController::class, 'storeFastReview'])->name('review.fastStore');
 
-    Route::put('center/{id}/verify', [RecyclingCenterController::class, 'verify'])->name('center.verify');
-    Route::put('owner/{id}/verify', [OwnerController::class, 'verify'])->name('owner.verify');
+    Route::middleware('admin')->group(function () {
+        Route::resource('admin', AdminController::class);
+        Route::resource('owner', OwnerController::class);
+        Route::put('center/{id}/verify', [RecyclingCenterController::class, 'verify'])->name('center.verify');
+        Route::put('owner/{id}/verify', [OwnerController::class, 'verify'])->name('owner.verify');
+    });
 });
 
 require __DIR__ . '/auth.php';

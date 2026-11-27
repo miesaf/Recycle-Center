@@ -41,4 +41,7 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    // Default map search radius in metres (SEARCH_RADIUS).
+    'search_radius' => (int) env('SEARCH_RADIUS', 3000),
+
 ];
