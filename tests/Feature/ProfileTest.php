@@ -20,6 +20,7 @@ test('profile information can be updated', function () {
         ->patch('/profile', [
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'phone_no' => '0123456789',
         ]);
 
     $response
@@ -41,6 +42,7 @@ test('email verification status is unchanged when the email address is unchanged
         ->patch('/profile', [
             'name' => 'Test User',
             'email' => $user->email,
+            'phone_no' => '0123456789',
         ]);
 
     $response
@@ -64,7 +66,7 @@ test('user can delete their account', function () {
         ->assertRedirect('/');
 
     $this->assertGuest();
-    $this->assertNull($user->fresh());
+    $this->assertSoftDeleted($user);
 });
 
 test('correct password must be provided to delete account', function () {

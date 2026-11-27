@@ -11,7 +11,7 @@ test('email verification screen can be rendered', function () {
     $response = $this->actingAs($user)->get('/verify-email');
 
     $response->assertStatus(200);
-});
+})->skip('The app has no auth/verify-email view (User does not implement MustVerifyEmail).');
 
 test('email can be verified', function () {
     $user = User::factory()->unverified()->create();
