@@ -219,10 +219,15 @@
             }
         };
 
+        // Text from the database (center details, reviews, names) is escaped before it goes into HTML.
+        function esc(value) {
+            return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
         let radiusCircle = null; // Store the circle object
 
         // Add a circle to the map
-        function addRadiusCircle(center, radius = {{ env('SEARCH_RADIUS') }}) { // Radius in meters)
+        function addRadiusCircle(center, radius = {{ (int) config('services.search_radius') }}) { // Radius in meters)
             if (radiusCircle) {
                 radiusCircle.setMap(null); // Remove existing circle
             }
@@ -313,12 +318,12 @@
                         bounds.extend(marker.position);
 
                         const infoWindowContent = `
-                            <h5>${location.name}</h5>
+                            <h5>${esc(location.name)}</h5>
                             <p class="card-text">
                                 ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'}) <a href="{{ route('review.index') }}/${location.id}/fast" target="_blank">Review this</a></small>
                             </p>
-                            <p>${location.address}<br/>
-                            Operation Hour: ${location.operation_hour}</p>
+                            <p>${esc(location.address)}<br/>
+                            Operation Hour: ${esc(location.operation_hour)}</p>
                             <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
                             target="_blank"
                             class="btn btn-xs btn-success"><i class="bi bi-compass"></i> Navigate</a>
@@ -340,22 +345,22 @@
                         resultCard.className = "card mb-2";
                         resultCard.innerHTML = `
                             <div class="card-body bg-success-subtle">
-                                <h5 class="card-title"><b>${location.name}</b></h5><br/>
+                                <h5 class="card-title"><b>${esc(location.name)}</b></h5><br/>
                                 <p class="card-text">
                                     ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'}) <a href="{{ route('review.index') }}/${location.id}/fast" target="_blank">Review this</a></small><br/>
-                                    ${location.address}
+                                    ${esc(location.address)}
                                 </p>
                                 <p class="card-text">
                                     <small>
-                                        Operation Hours: ${location.operation_hour}<br/>
-                                        Contact No.: <a href="tel:${location.phone_no}">${location.phone_no}</a><br/>
+                                        Operation Hours: ${esc(location.operation_hour)}<br/>
+                                        Contact No.: <a href="tel:${esc(location.phone_no)}">${esc(location.phone_no)}</a><br/>
                                         Accepted Materials:
                                         <ul>
                                             ${generateServicesList(location.services)}
                                         </ul>
                                     </small>
                                 </p>
-                                <button class="btn btn-xs btn-primary" onclick="focusMarker('${location.name}');">
+                                <button class="btn btn-xs btn-primary" onclick="focusMarker(${esc(JSON.stringify(location.name))});">
                                     <i class="bi bi-geo-alt"></i> View on Map
                                 </button>
                                 <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
@@ -434,11 +439,11 @@
                         bounds.extend(marker.position);
 
                         const infoWindowContent = `
-                            <h5>${location.name}</h5>
+                            <h5>${esc(location.name)}</h5>
                             <p class="card-text">
                                 ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'}) <a href="{{ route('review.index') }}/${location.id}/fast" target="_blank">Review this</a></small>
                             </p>
-                            <p>${location.address}<br/>Operation Hour: ${location.operation_hour}</p>
+                            <p>${esc(location.address)}<br/>Operation Hour: ${esc(location.operation_hour)}</p>
                             <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}" target="_blank" class="btn btn-xs btn-success">
                                 <i class="bi bi-compass"></i> Navigate
                             </a>
@@ -460,22 +465,22 @@
                         resultCard.className = "card mb-2";
                         resultCard.innerHTML = `
                             <div class="card-body bg-success-subtle">
-                                <h5 class="card-title"><b>${location.name}</b></h5><br/>
+                                <h5 class="card-title"><b>${esc(location.name)}</b></h5><br/>
                                 <p class="card-text">
                                     ${starRating(location.reviews_avg_rating)} <small>(${location.reviews_avg_rating ?? 'No Rating'}) <a href="{{ route('review.index') }}/${location.id}/fast" target="_blank">Review this</a></small><br/>
-                                    ${location.address}
+                                    ${esc(location.address)}
                                 </p>
                                 <p class="card-text">
                                     <small>
-                                        Operation Hours: ${location.operation_hour}<br/>
-                                        Contact No.: <a href="tel:${location.phone_no}">${location.phone_no}</a><br/>
+                                        Operation Hours: ${esc(location.operation_hour)}<br/>
+                                        Contact No.: <a href="tel:${esc(location.phone_no)}">${esc(location.phone_no)}</a><br/>
                                         Accepted Materials:
                                         <ul>
                                             ${generateServicesList(location.services)}
                                         </ul>
                                     </small>
                                 </p>
-                                <button class="btn btn-xs btn-primary" onclick="focusMarker('${location.name}');">
+                                <button class="btn btn-xs btn-primary" onclick="focusMarker(${esc(JSON.stringify(location.name))});">
                                     <i class="bi bi-geo-alt"></i> View on Map
                                 </button>
                                 <a href="https://www.google.com/maps/dir/?api=1&destination=${location.latitude},${location.longitude}"
@@ -506,7 +511,7 @@
                     return '<li>No services listed</li>';
                 }
 
-                return services.map(service => `<li>${service}</li>`).join('');
+                return services.map(service => `<li>${esc(service)}</li>`).join('');
             } catch (error) {
                 console.error('Error parsing services JSON:', error);
                 return '<li>Invalid services data</li>';
@@ -562,7 +567,7 @@
                     }
 
                     data.forEach(review => {
-                        document.getElementById('reviewModalLabel').innerHTML = `Reviews for ${review.center_info.name}`;
+                        document.getElementById('reviewModalLabel').innerHTML = `Reviews for ${esc(review.center_info.name)}`;
 
                         // Create a Date object
                         const date = new Date(review.created_at);
@@ -589,10 +594,10 @@
                             <i class="timeline-icon bi bi-chat-text-fill text-bg-warning"></i>
                             <div class="timeline-item"> <span class="time"> <i class="bi bi-clock-fill"></i> ${readableTime}, ${readableDate}
                                 </span>
-                                <h3 class="timeline-header"> <a href="#">${review.user_info.name}</a> commented
+                                <h3 class="timeline-header"> <a href="#">${esc(review.user_info.name)}</a> commented
                                 </h3>
                                 <div class="timeline-body">
-                                    ${review.review}
+                                    ${esc(review.review)}
                                 </div>
                             </div>
                         `;

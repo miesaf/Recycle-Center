@@ -11,6 +11,12 @@ class RecyclingCenter extends Model
 {
     use SoftDeletes;
 
+    // The materials a center can accept (the checkboxes on the center form and the map filter).
+    public const SERVICES = [
+        'Paper', 'Metal', 'Textiles (Clothing and Fabric)', 'Glass', 'Plastic', 'Electronics (E-Waste)',
+        'Cardboard', 'Batteries', 'Tires', 'Used Cooking Oil',
+    ];
+
     public function ownerInfo(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner');

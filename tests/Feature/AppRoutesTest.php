@@ -374,8 +374,154 @@ test('admins and owners see the review list', function () {
 
 // Profiles
 
-test('users can view a user profile', function () {
+test('a profile page is for its own user and admins', function () {
     $other = centerOwner();
+    $me = contributor();
 
-    $this->actingAs(contributor())->get("/user/{$other->id}")->assertOk()->assertSee($other->name);
+    $this->actingAs($me)->get("/user/{$me->id}")->assertOk()->assertSee($me->name);
+    $this->actingAs($me)->get("/user/{$other->id}")->assertForbidden();
+    $this->actingAs(admin())->get("/user/{$other->id}")->assertOk()->assertSee($other->name);
 });
+
+// Access and input safety
+
+test('only admins reach the admin and owner pages and verify centers or owners', function () {
+    $owner = centerOwner();
+    $center = makeCenter($owner, ['is_verified' => false]);
+
+    foreach ([contributor(), $owner] as $user) {
+        $this->actingAs($user)->get('/admin')->assertForbidden();
+        $this->actingAs($user)->get('/admin/create')->assertForbidden();
+        $this->actingAs($user)->post('/admin', ['name' => 'X', 'email' => 'x@example.test'])->assertForbidden();
+        $this->actingAs($user)->get('/owner')->assertForbidden();
+        $this->actingAs($user)->get("/owner/{$owner->id}/edit")->assertForbidden();
+        $this->actingAs($user)->delete("/owner/{$owner->id}")->assertForbidden();
+        $this->actingAs($user)->put("/owner/{$owner->id}/verify")->assertForbidden();
+        $this->actingAs($user)->put("/center/{$center->id}/verify")->assertForbidden();
+    }
+
+    expect($center->fresh()->is_verified)->toBeFalsy();
+    $this->actingAs(admin())->put("/center/{$center->id}/verify")->assertRedirect(route('center.index'));
+    expect($center->fresh()->is_verified)->toBeTruthy();
+});
+
+test('contributors cannot open the center pages', function () {
+    $center = makeCenter(centerOwner());
+    $user = contributor();
+
+    $this->actingAs($user)->get('/center')->assertForbidden();
+    $this->actingAs($user)->get('/center/create')->assertForbidden();
+    $this->actingAs($user)->post('/center', centerPayload())->assertForbidden();
+    $this->actingAs($user)->get("/center/{$center->id}")->assertForbidden();
+    $this->actingAs($user)->delete("/center/{$center->id}")->assertForbidden();
+    expect(RecyclingCenter::count())->toBe(1);
+});
+
+test('a center owner cannot touch another owner\'s center', function () {
+    $mine = centerOwner();
+    $theirs = makeCenter(centerOwner(), ['name' => 'THEIR CENTER']);
+
+    $this->actingAs($mine)->get("/center/{$theirs->id}")->assertForbidden();
+    $this->actingAs($mine)->get("/center/{$theirs->id}/edit")->assertForbidden();
+    $this->actingAs($mine)->put("/center/{$theirs->id}", centerPayload(['name' => 'TAKEN']))->assertForbidden();
+    $this->actingAs($mine)->delete("/center/{$theirs->id}")->assertForbidden();
+    $this->actingAs($mine)->get('/center/99999')->assertNotFound();
+
+    expect($theirs->fresh())->name->toBe('THEIR CENTER')->owner->toBe($theirs->owner)->deleted_at->toBeNull();
+});
+
+test('an owner\'s center update is validated', function () {
+    $owner = centerOwner();
+    $center = makeCenter($owner, ['name' => 'MY CENTER']);
+
+    $this->actingAs($owner)->put("/center/{$center->id}", ['name' => ''])->assertSessionHasErrors(['name', 'services', 'address']);
+    expect($center->fresh()->name)->toBe('MY CENTER');
+
+    $this->actingAs($owner)->put("/center/{$center->id}", centerPayload(['name' => 'MY CENTER 2']))->assertRedirect(route('center.index'));
+    expect($center->fresh())->name->toBe('MY CENTER 2')->owner->toBe($owner->id);
+});
+
+test('services must come from the list and are stored as valid JSON', function () {
+    $owner = centerOwner();
+
+    $this->actingAs($owner)->post('/center', centerPayload(['services' => ['Paper', '"] } <script>alert(1)</script>']]))
+        ->assertSessionHasErrors('services.1');
+    expect(RecyclingCenter::count())->toBe(0);
+
+    $this->actingAs($owner)->post('/center', centerPayload(['services' => ['Paper', 'Used Cooking Oil', 'Paper']]))->assertRedirect();
+    expect(json_decode(RecyclingCenter::firstOrFail()->services, true))->toBe(['services' => ['Paper', 'Used Cooking Oil']]);
+});
+
+test('reviews can be changed only by their author or an admin', function () {
+    $owner = centerOwner();
+    $center = makeCenter($owner);
+    $author = contributor();
+    $review = makeReview($center, $author, 4);
+    $stranger = contributor();
+
+    $this->actingAs($stranger)->get("/review/{$review->id}")->assertForbidden();
+    $this->actingAs($stranger)->get("/review/{$review->id}/edit")->assertForbidden();
+    $this->actingAs($stranger)->put("/review/{$review->id}", ['rating' => 1])->assertForbidden();
+    $this->actingAs($stranger)->delete("/review/{$review->id}")->assertForbidden();
+
+    // The reviewed center's owner may read it, not change it
+    $this->actingAs($owner)->get("/review/{$review->id}")->assertOk();
+    $this->actingAs($owner)->put("/review/{$review->id}", ['rating' => 1])->assertForbidden();
+    expect($review->fresh()->rating)->toBe(4);
+
+    $this->actingAs($author)->put("/review/{$review->id}", ['rating' => 5])->assertRedirect(route('review.index'));
+    expect($review->fresh()->rating)->toBe(5);
+    $this->actingAs(admin())->delete("/review/{$review->id}")->assertRedirect(route('review.index'));
+    expect(Review::count())->toBe(0);
+});
+
+test('one review per user per center, for centers that exist', function () {
+    $center = makeCenter(centerOwner());
+    $user = contributor();
+
+    $this->actingAs($user)->post('/review', ['recycling_center' => $center->id, 'rating' => 4])->assertRedirect(route('review.index'));
+    $this->actingAs($user)->post('/review', ['recycling_center' => $center->id, 'rating' => 1])->assertSessionHas('danger');
+    $this->actingAs($user)->post("/review/{$center->id}/fast", ['rating' => 1])->assertSessionHas('danger');
+    $this->actingAs($user)->post('/review', ['recycling_center' => 99999, 'rating' => 3])->assertSessionHasErrors('recycling_center');
+    $this->actingAs($user)->post('/review/99999/fast', ['rating' => 3])->assertNotFound();
+
+    expect(Review::count())->toBe(1)->and(Review::first()->rating)->toBe(4);
+});
+
+test('the public reviews API shows reviewer names only', function () {
+    $center = makeCenter(centerOwner());
+    $user = User::factory()->create(['phone_no' => '0198887777', 'google_id' => 'g-123']);
+    makeReview($center, $user);
+
+    $json = $this->getJson("/api/{$center->id}/getReviews")->assertOk()->json('0');
+    expect($json['user_info'])->toBe(['id' => $user->id, 'name' => $user->name])
+        ->and(json_encode($json))->not->toContain($user->email)->not->toContain('0198887777')->not->toContain('g-123');
+});
+
+test('search never returns unverified centers, even on an address match', function () {
+    $owner = centerOwner();
+    makeCenter($owner, ['name' => 'VERIFIED KLANG', 'address' => 'Jalan Klang']);
+    makeCenter($owner, ['name' => 'PENDING', 'address' => 'Jalan Klang', 'is_verified' => false]);
+
+    $this->getJson('/api/search?q=Klang')->assertOk()->assertJsonCount(1)->assertJsonPath('0.name', 'VERIFIED KLANG');
+});
+
+test('search material filters are bound parameters, not SQL', function () {
+    // sqlite has no JSON_CONTAINS; give the test connection one that behaves like MySQL's for this column
+    \Illuminate\Support\Facades\DB::connection()->getPdo()->sqliteCreateFunction('JSON_CONTAINS', function ($doc, $value, $path) {
+        return in_array(json_decode($value), json_decode($doc, true)['services'] ?? [], true) ? 1 : 0;
+    }, 3);
+    $owner = centerOwner();
+    makeCenter($owner, ['name' => 'PAPER ONLY', 'services' => '{"services":["Paper"]}']);
+    makeCenter($owner, ['name' => 'GLASS ONLY', 'services' => '{"services":["Glass"]}']);
+
+    $sql = [];
+    \Illuminate\Support\Facades\DB::listen(function ($query) use (&$sql) { $sql[] = $query->sql; });
+
+    $this->getJson('/api/search?' . http_build_query(['f' => ['Glass']]))->assertOk()->assertJsonCount(1)->assertJsonPath('0.name', 'GLASS ONLY');
+    $this->getJson('/api/search?' . http_build_query(['f' => ["x\"') OR 1=1 OR ('\""]]))->assertOk()->assertJsonCount(0);
+    expect(implode("\n", $sql))->not->toContain('OR 1=1');
+
+    $this->getJson('/api/search?f=Paper')->assertUnprocessable();
+});
+

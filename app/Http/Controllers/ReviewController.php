@@ -60,10 +60,15 @@ class ReviewController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'recycling_center' => 'required|integer',
+            'recycling_center' => 'required|integer|exists:recycling_centers,id',
             'rating' => 'required|numeric|between:1,5',
             'review' => 'nullable|max:255',
         ]);
+
+        if ($this->alreadyReviewed($request->recycling_center)) {
+            Session::flash('danger', 'You have already reviewed this recycle center!');
+            return redirect()->route("review.index");
+        }
 
         $review = new Review;
         $review->recycling_center = $request->recycling_center;
@@ -92,11 +97,8 @@ class ReviewController extends Controller
      */
     public function show(string $id)
     {
-        $review = Review::withTrashed()
-                            ->with(['centerInfo' => function ($query) {
-                                $query->withTrashed();
-                            }])
-                            ->find($id);
+        $review = $this->reviewFor($id, false, true);
+        $review->load(['centerInfo' => fn ($query) => $query->withTrashed()]);
 
         return view("review.show")->with('review', $review);
     }
@@ -106,7 +108,7 @@ class ReviewController extends Controller
      */
     public function edit(string $id)
     {
-        $review = Review::with('centerInfo')->find($id);
+        $review = $this->reviewFor($id, true)->load('centerInfo');
         return view("review.edit")->with('review', $review);
     }
 
@@ -115,12 +117,13 @@ class ReviewController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $review = $this->reviewFor($id, true);
+
         $validated = $request->validate([
             'rating' => 'required|numeric|between:1,5',
             'review' => 'nullable|max:255',
         ]);
 
-        $review = Review::find($id);
         $review->rating = $request->rating;
         $review->review = $request->review;
 
@@ -145,7 +148,7 @@ class ReviewController extends Controller
      */
     public function destroy(string $id)
     {
-        $review = Review::find($id);
+        $review = $this->reviewFor($id, true);
 
         if ($review->delete()) {
             Session::flash('success', 'Recycle center review deleted!');
@@ -196,6 +199,13 @@ class ReviewController extends Controller
             'review' => 'nullable|max:255',
         ]);
 
+        abort_unless(RecyclingCenter::whereKey($id)->exists(), 404);
+
+        if ($this->alreadyReviewed($id)) {
+            Session::flash('danger', 'You have already reviewed this recycle center!');
+            return redirect()->route("review.index");
+        }
+
         $review = new Review;
         $review->recycling_center = $id;
         $review->user = Auth::user()->id;
@@ -221,9 +231,30 @@ class ReviewController extends Controller
     public function getReviews(Request $request, string $id)
     {
         $reviews = Review::where('recycling_center', '=', $id)
-            ->with('centerInfo', 'userInfo')
+            ->with(['centerInfo:id,name', 'userInfo:id,name'])
             ->orderBy('created_at', 'DESC')
             ->get();
         return response()->json($reviews);
+    }
+
+    // A review its author or an admin may change; for viewing, the reviewed center's owner may too.
+    private function reviewFor(string $id, bool $change, bool $withTrashed = false): Review
+    {
+        $review = ($withTrashed ? Review::withTrashed() : Review::query())->findOrFail($id);
+        $user = Auth::user();
+        $allowed = $user->is_admin || (int) $review->user === (int) $user->id;
+
+        if (! $allowed && ! $change && $user->is_center) {
+            $allowed = RecyclingCenter::withTrashed()->whereKey($review->recycling_center)->where('owner', $user->id)->exists();
+        }
+
+        abort_unless($allowed, 403);
+
+        return $review;
+    }
+
+    private function alreadyReviewed($centerId): bool
+    {
+        return Review::where('recycling_center', $centerId)->where('user', Auth::id())->exists();
     }
 }
