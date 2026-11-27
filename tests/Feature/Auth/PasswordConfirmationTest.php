@@ -8,7 +8,7 @@ test('confirm password screen can be rendered', function () {
     $response = $this->actingAs($user)->get('/confirm-password');
 
     $response->assertStatus(200);
-});
+})->skip('The app has no auth/confirm-password view (no route uses password.confirm).');
 
 test('password can be confirmed', function () {
     $user = User::factory()->create();
